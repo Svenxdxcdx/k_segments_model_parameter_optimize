@@ -36,6 +36,10 @@ class Simulation:
             input_total_size = metadata.query('_field == "files_input_total_size"')['_value'].iloc[0]
             self.files.append([memory, file_events, input_total_size])
         self.task_model.files = self.files
+        # TODO
+        if isinstance(self.task_model, KSegmentsModel) and self.task_model.mode != "normal":
+            #if mod
+            pass
         self.error = self.task_model.train_model()
         
     def get_file_names(self):

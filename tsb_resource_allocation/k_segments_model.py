@@ -21,7 +21,13 @@ class KSegmentsModel:
         self.files = []
         self.mode = "normal" # fileEvents, interploate
 
+    def calculate_k(self):
+        pass
+
     def predict(self, new_x):
+        if self.mode != "normal":
+            self.calculate_k()
+            pass
         r = []
         p_t = self.model_time.predict(np.array([new_x]).reshape((-1,1))).astype(int)[0] // self.k
         
