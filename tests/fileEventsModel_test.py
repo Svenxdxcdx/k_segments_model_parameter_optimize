@@ -22,11 +22,11 @@ from tsb_resource_allocation.k_segments_model import KSegmentsModel
 from tsb_resource_allocation.file_events_model import FileEventsModel
 from tsb_resource_allocation.default_model import DefaultModel
 
-from tsb_resource_allocation.kSegementVariations.fileEvents_k_segements import FileEvents_k_segements
+from tsb_resource_allocation.file_events_model import FileEventsModel
 
 sns.set_theme(style="darkgrid")
 
-class FileEvents_test(unittest.TestCase):
+class FileEventsModel_test(unittest.TestCase):
     
     def test_run(self):
         
@@ -73,7 +73,7 @@ def run_simulation02(directory, training, test, monotonically_increasing = True,
     
     # KSegments retry: selective
 
-    task_model = FileEvents_k_segements(k = k, monotonically_increasing = monotonically_increasing)
+    task_model = FileEventsModel()
     simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
     simulations.append(simulation)
 

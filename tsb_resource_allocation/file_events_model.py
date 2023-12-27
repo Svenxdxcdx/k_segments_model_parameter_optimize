@@ -41,6 +41,9 @@ class FileEventsModel:
         # f:files = (0:value, 1:file_events, 2:total_input_file_size)
         
         data = list(map(lambda d: (d[0], self.filter_file_events(d[1]), d[2]), self.files))
+        for d in data[1:]:
+            print(str(d))
+        
         valid_dataset = all(len(d[1]) == len(data[0][1]) for d in data[1:])
         
         if not valid_dataset:

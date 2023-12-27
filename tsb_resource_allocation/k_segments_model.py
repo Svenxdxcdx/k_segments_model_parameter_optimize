@@ -25,9 +25,6 @@ class KSegmentsModel:
         pass
 
     def predict(self, new_x):
-        if self.mode != "normal":
-            self.calculate_k()
-            pass
         r = []
         p_t = self.model_time.predict(np.array([new_x]).reshape((-1,1))).astype(int)[0] // self.k
         
@@ -47,7 +44,9 @@ class KSegmentsModel:
         if len(self.files) == 0: 
             print("Training files are empty!")
             return
-        
+        if self.mode != "normal":
+            self.calculate_k()
+            pass
         # f:files = (0:value, 1:file_events, 2:total_input_file_size)
         
         self.x = [f[2] for f in self.files]
