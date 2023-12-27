@@ -82,6 +82,7 @@ class KSegmentsModel:
         plt.scatter(self.x, self.y_t, color='g')
         plt.plot(self.x, self.model_time.predict(np.asarray([self.x]).reshape((-1, 1))), color='r')
 
+
     def plot_ram_regression(self, num_cluster):
         self.plot_regression(num_cluster, self.y_v, self.model_value)
 
