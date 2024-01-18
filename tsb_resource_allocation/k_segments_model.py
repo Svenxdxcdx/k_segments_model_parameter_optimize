@@ -63,6 +63,11 @@ class KSegmentsModel:
         self.model_time = self.train_linear_model(self.x, self.y_t, self.time_mode)
 
     def train_linear_model(self, x, y, mode):
+        """
+        y = np.array(y)
+        y[np.isnan(y)] = 1
+        y = y.tolist()
+        """
         lm = LinearRegression()
         lm.fit(np.asarray(x).reshape((-1, 1)),y)
         l_diff = 0

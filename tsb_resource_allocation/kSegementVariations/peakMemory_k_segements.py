@@ -25,9 +25,14 @@ class PeakMemory_k_segemnts(KSegmentsModel):
     def calculate_k(self):
         memoryList = list(map(lambda d: (d[0]['_value']), self.files))
         self.k = self.findAveragePeaks(memoryList)
-        
+        self.valid_k()
         pass
     
+    def valid_k(self):
+        for y,_,x in self.files:
+            if len(y) < self.k:
+                self.k = len(y)
+        
     def findAveragePeaks(self, memoryList):
         numberOfFiles = len(memoryList)
         numberOfPeaksOverAllFiles = 0

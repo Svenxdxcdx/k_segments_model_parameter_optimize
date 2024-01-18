@@ -91,8 +91,8 @@ def run_simulation02(directory, training, test, monotonically_increasing = True,
     avg_retries = list(map(lambda r: r / len(test), retries))
     avg_runtime = list(map(lambda r: r / len(test), runtimes))
     
-    task_model.plot_ram_regression(4)
-    plt.show()
+    #task_model.plot_ram_regression(4)
+    #plt.show()
     return avg_waste, avg_retries, avg_runtime
 
 

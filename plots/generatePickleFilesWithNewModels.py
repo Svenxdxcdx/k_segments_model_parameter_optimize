@@ -1,3 +1,31 @@
+import unittest
+import os
+import sys
+import matplotlib.pyplot as plt
+import seaborn as sns
+import os
+import math
+import pandas as pd
+import pickle
+
+PROJECT_PATH = os.getcwd()
+SOURCE_PATH = os.path.join(
+    PROJECT_PATH
+)
+sys.path.append(SOURCE_PATH)
+
+
+
+from tsb_resource_allocation.witt_task_model import WittTaskModel
+from tsb_resource_allocation.tovar_task_model import TovarTaskModel
+from tsb_resource_allocation.simulation import Simulation
+from tsb_resource_allocation.k_segments_model import KSegmentsModel
+from tsb_resource_allocation.file_events_model import FileEventsModel
+from tsb_resource_allocation.default_model import DefaultModel
+
+from tsb_resource_allocation.file_events_model import FileEventsModel
+
+
 
 
 BASE_DIR = 'C:/privat/Bachelor_Work/pytonProject/k-segments-traces-main/k-segments-traces-main' 
@@ -34,13 +62,13 @@ def run_simulation(directory, training, test, monotonically_increasing = True, k
     # PeakMemory_k_segemnts 
     task_model = PeakMemory_k_segemnts(k = k, monotonically_increasing = monotonically_increasing)
     simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
-    #simulations.append(simulation)
+    simulations.append(simulation)
     
     
     # FileEvents_k_segements
     task_model = FileEvents_k_segements(k = k, monotonically_increasing = monotonically_increasing)
     simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
-    #simulations.append(simulation)
+    simulations.append(simulation)
     
     # KSegments retry: selective
     task_model = KSegmentsModel(k = k, monotonically_increasing = monotonically_increasing)
@@ -55,26 +83,6 @@ def run_simulation(directory, training, test, monotonically_increasing = True, k
     # KSegments retry: partial
     task_model = KSegmentsModel(k = k, monotonically_increasing = monotonically_increasing)
     simulation = Simulation(task_model, directory, retry_mode = 'partial', provided_file_names = training)
-    simulations.append(simulation)
-    
-    # WITT LR MEAN+- TASK MODEL 
-    task_model = WittTaskModel(mode = "mean+-")
-    simulation = Simulation(task_model, directory, retry_mode = 'full', provided_file_names = training)
-    simulations.append(simulation)
-
-    # TOVAR TASK MODEL - full retry
-    task_model = TovarTaskModel()
-    simulation = Simulation(task_model, directory, retry_mode = 'full', provided_file_names = training)
-    simulations.append(simulation)
-    
-     # TOVAR TASK MODEL - tovar retry
-    task_model = TovarTaskModel()
-    simulation = Simulation(task_model, directory, retry_mode = 'tovar', provided_file_names = training)
-    simulations.append(simulation)
-    
-    # Default Model
-    task_model = DefaultModel()
-    simulation = Simulation(task_model, directory, retry_mode = 'full', provided_file_names = training)
     simulations.append(simulation)
     
     selected_k ,waste, retries, runtimes = [0 for _ in range(len(simulations))],[0 for _ in range(len(simulations))],[0 for _ in range(len(simulations))],[0 for _ in range(len(simulations))]
@@ -136,15 +144,34 @@ if __name__ == "__main__":
     categories = ["selecktive k","Wastage", "Retries", "Runtime"]
     percentages = ["25%", "50%", "75%"]
 
-    
+
+    k_selected = []
+    storageWaste = []
+    retries = []
+    runtime = []
     # 0 = WASTE, 1 = RETRIES, 2 = RUNTIME
     for task in workflow_tasks:
         r = benchmark_task(task)
         if r == -1:
             continue
+        k_selected.append(r[0])
+        storageWaste.append(r[1])
+        retries.append(r[2])
+        runtime.append(r[3])
         task_name = os.path.basename(task)
         m = ', '.join(map(str, r[0][2]))
         print(f'{task_name}')
         for i, category in enumerate(categories): 
             for j, percentage in enumerate(percentages): 
                 print(f'{category} {percentage}: {r[i][j]}')
+                
+    models = ["PeakMemory_k_segemnts", "FileEvents_k_segements", "KSegments retry: selective", "KSegments retry: partial"]  
+    dictObject = {
+        "models": models,
+        "k_selected": k_selected,
+        "storageWaste": storageWaste,
+        "retries": retries,
+        "runtime": runtime,
+    }
+    with open("newModlesResults.pickle", "wb") as file:
+        pickle.dump(dictObject, file, protocol=pickle.HIGHEST_PROTOCOL)
