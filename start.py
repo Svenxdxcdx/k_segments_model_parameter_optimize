@@ -80,6 +80,7 @@ def run_simulation(directory, training, test, monotonically_increasing = True, k
     selected_k ,waste, retries, runtimes = [0 for _ in range(len(simulations))],[0 for _ in range(len(simulations))],[0 for _ in range(len(simulations))],[0 for _ in range(len(simulations))]
     for file_name in test:
         for i,s in enumerate(simulations):
+            # cute for reruns
             result = s.execute(file_name, True)
             if hasattr(s.task_model, 'k'):
                 selected_k[i] = s.task_model.k

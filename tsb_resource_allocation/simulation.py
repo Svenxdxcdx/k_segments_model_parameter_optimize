@@ -49,7 +49,7 @@ class Simulation:
         csv_content = pd.read_csv(f'{self.directory}/{file_name+ending}', skiprows = 3)
         return csv_content
 
-    def execute(self, test_file_name, suppress_plots = False):
+    def execute(self, test_file_name, suppress_plots = True):
         if self.error:
             return (-1,-1,-1)
         base_directory = self.directory+"/test" if not self.provided_file_names else self.directory

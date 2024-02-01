@@ -43,6 +43,9 @@ from tsb_resource_allocation.file_events_model import FileEventsModel
 from tsb_resource_allocation.default_model import DefaultModel
 from tsb_resource_allocation.kSegementVariations.fileEvents_k_segements import FileEvents_k_segements
 from tsb_resource_allocation.kSegementVariations.peakMemory_k_segements import PeakMemory_k_segemnts
+from tsb_resource_allocation.kSegementVariations.fileSize_k_segements import FileSize_k_segements
+from tsb_resource_allocation.kSegementVariations.lookUpTable_k_segements import LookUpTable_k_segements
+
 sns.set_theme(style="darkgrid")
 
 
@@ -58,6 +61,17 @@ def run_simulation(directory, training, test, monotonically_increasing = True, k
     
     # MODELS
     simulations = []
+    
+    # LookUpTable_k_segements
+    task_model = LookUpTable_k_segements(k = k, monotonically_increasing = monotonically_increasing)
+    simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
+    simulations.append(simulation)
+    
+    
+    # FileSize_k_segements
+    task_model = FileSize_k_segements(k = k, monotonically_increasing = monotonically_increasing)
+    simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
+    simulations.append(simulation)
     
     # PeakMemory_k_segemnts 
     task_model = PeakMemory_k_segemnts(k = k, monotonically_increasing = monotonically_increasing)
@@ -166,7 +180,7 @@ if __name__ == "__main__":
     workflow_tasks_eager = [os.path.join(base_directory_eager, item) for item in os.listdir(base_directory_eager) if os.path.isdir(os.path.join(base_directory_eager, item))]
     workflow_tasks_eager = [task for task in workflow_tasks_eager if len(os.listdir(task)) > 40]
     
-    workflow_tasks = workflow_tasks_sarek + workflow_tasks_eager
+    workflow_tasks = workflow_tasks_sarek #+ workflow_tasks_eager
     #workflow_tasks = workflow_tasks_eager
     
     categories = ["selecktive k","Wastage", "Retries", "Runtime"]
@@ -193,7 +207,7 @@ if __name__ == "__main__":
             for j, percentage in enumerate(percentages): 
                 print(f'{category} {percentage}: {r[i][j]}')
     
-    models = ["PeakMemory_k_segemnts", "FileEvents_k_segements", "KSegments retry: selective", "KSegments retry: partial", "WITT LR MEAN+- TASK MODEL", "TOVAR TASK MODEL - full retry", "TOVAR TASK MODEL - tovar retry", "Default Model"]  
+    models = ["LookUpTable_k_segements", "FileSize_k_segements", "PeakMemory_k_segemnts", "FileEvents_k_segements", "KSegments retry: selective", "KSegments retry: partial", "WITT LR MEAN+- TASK MODEL", "TOVAR TASK MODEL - full retry", "TOVAR TASK MODEL - tovar retry", "Default Model"]  
     dictObject = {
         "models": models,
         "storageWaste": storageWaste,
