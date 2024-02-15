@@ -25,10 +25,10 @@ class FileSize_k_segements(KSegmentsModel):
         
     def calculate_k(self):
         memoryLenList = list(map(lambda d: (len(d[0]['_value'])), self.files))
-        self.k = self.findkWithFileSize(memoryLenList)
+        self.k = self.find_k_withMemoryLogFileSize(memoryLenList)
         
     # divide to the 
-    def findkWithFileSize(self, memoryLenList):
+    def find_k_withMemoryLogFileSize(self, memoryLenList):
         memoryLenList.sort()
         smallestSize = memoryLenList[0]
         memoryArray = np.array(memoryLenList)

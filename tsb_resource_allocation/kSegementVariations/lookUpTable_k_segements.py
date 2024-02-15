@@ -58,13 +58,13 @@ class LookUpTable_k_segements(KSegmentsModel):
                 if mermoryLen < currentPart:
                     partsCounterArray[factor] += 1
                     break
-        
+         
         strongestFileSizeIndex = np.argmax(partsCounterArray)
         return self.selectLookUpTablePart(smallestSize, strongestFileSizeIndex)
     
     
     def selectLookUpTablePart(self, smallestSize, strongestFileSizeIndex):
-        return int((smallestSize / NUMBER_OF_PARTS) * (strongestFileSizeIndex+1))
+        return int((smallestSize / NUMBER_OF_PARTS) + (strongestFileSizeIndex))
     
     def selectK(self):
         pass
