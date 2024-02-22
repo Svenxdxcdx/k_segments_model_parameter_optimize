@@ -32,26 +32,7 @@ class FileEvents_k_segements(KSegmentsModel):
             return 
         self.k = self.fileAvarageLength()
         return
-    """
-        data = list(map(lambda d: (d[0],list(map(lambda f: self.find_file_event_in_values(d[0], f), d[1])),d[2]), data))
-        
-        numberOfCp = []
-        for y,z,x in data:
-            pointer = 0
-            for i,cp in enumerate(z):
-                s = y[pointer:cp]
-                if len(s) == 0:
-                    if cp > 0:
-                        s = [y[cp]]
-                    else:
-                        s = [y[0]]
-                pointer = cp   
-                numberOfCp.append(max(s))
-                
-        #averageNumberOfCp = numberOfCp / len(self.files)
-        #TODO
-        return 4
-    """
+
 
     def fileAvarageLength(self):
         data = list(map(lambda d: (len(d[1])), self.files))

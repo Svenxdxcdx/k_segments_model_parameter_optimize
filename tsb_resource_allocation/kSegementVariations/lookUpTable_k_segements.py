@@ -36,6 +36,15 @@ class LookUpTable_k_segements(KSegmentsModel):
         self.k = self.buildLookUpTable(memoryLenList)
         if self.k == 0:
             self.k = 1
+        self.valid_k()
+        pass
+    
+    
+    
+    def valid_k(self):
+        for y,_,x in self.files:
+            if len(y) < self.k:
+                self.k = len(y)
         
     # Numeric misstake get covered
     def buildLookUpTable(self, memoryLenList):

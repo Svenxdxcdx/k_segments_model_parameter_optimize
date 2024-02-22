@@ -38,9 +38,9 @@ class AverageMemory_k_segements(KSegmentsModel):
         
         self.k = int(sumUpK / len(memoryArray))
         
-        
-        
-        
+        self.valid_k()
+        pass
+            
         
     def findChangePoints(self, memoryArray):
         avaerage = np.average(memoryArray)

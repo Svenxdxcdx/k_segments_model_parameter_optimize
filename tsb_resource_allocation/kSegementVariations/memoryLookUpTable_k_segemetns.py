@@ -47,7 +47,15 @@ class MemoryLookUpTable_k_segemetns(KSegmentsModel):
                 
         indexMostOccur_k = numberOf_k_list.index(max(numberOf_k_list))
         self.k = k_list[indexMostOccur_k]
-            
+        self.valid_k()
+        pass
+    
+    
+    
+    def valid_k(self):
+        for y,_,x in self.files:
+            if len(y) < self.k:
+                self.k = len(y)
             
     def findChangePoints(self, memoryArray):
         avaerage = np.average(memoryArray)
