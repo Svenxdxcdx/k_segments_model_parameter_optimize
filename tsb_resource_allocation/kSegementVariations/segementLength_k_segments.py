@@ -26,7 +26,7 @@ class SegementLength_k_segements(KSegmentsModel):
     # memory is the first
     def calculate_k(self):
         memoryList = list(map(lambda d: (d[0]['_value']), self.files))
-        memoryList.sort()
+        memoryList.sort(key=len)
         smallestMemoryLog = memoryList[0]
         segmentLength = int(len(smallestMemoryLog) / BASE_MODLE_TRAININGS_K)
         numberOfAllSegments = 0

@@ -1,40 +1,12 @@
-import unittest
-import os
-import sys
+BASE_DIR = 'C:\\privat\\Bachelor_Work\\pytonProject\\update-traces\\k-Segments-traces-main' 
+
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 import math
 import pandas as pd
+import random
 import pickle
-
-PROJECT_PATH = os.getcwd()
-SOURCE_PATH = os.path.join(
-    PROJECT_PATH
-)
-sys.path.append(SOURCE_PATH)
-
-
-
-from tsb_resource_allocation.witt_task_model import WittTaskModel
-from tsb_resource_allocation.tovar_task_model import TovarTaskModel
-from tsb_resource_allocation.simulation import Simulation
-from tsb_resource_allocation.k_segments_model import KSegmentsModel
-from tsb_resource_allocation.file_events_model import FileEventsModel
-from tsb_resource_allocation.default_model import DefaultModel
-
-from tsb_resource_allocation.file_events_model import FileEventsModel
-
-
-
-
-BASE_DIR = 'C:/privat/Bachelor_Work/pytonProject/k-segments-traces-main/k-segments-traces-main' 
-
-import matplotlib.pyplot as plt
-import seaborn as sns
-import os
-import math
-import pandas as pd
 from tsb_resource_allocation.witt_task_model import WittTaskModel
 from tsb_resource_allocation.tovar_task_model import TovarTaskModel
 from tsb_resource_allocation.simulation import Simulation
@@ -43,13 +15,10 @@ from tsb_resource_allocation.file_events_model import FileEventsModel
 from tsb_resource_allocation.default_model import DefaultModel
 from tsb_resource_allocation.kSegementVariations.fileEvents_k_segments import FileEvents_k_segements
 from tsb_resource_allocation.kSegementVariations.peakMemory_k_segments import PeakMemory_k_segemnts
-from tsb_resource_allocation.kSegementVariations.fileSize_k_segments import FileSize_k_segements
-from tsb_resource_allocation.kSegementVariations.lookUpTable_k_segments import LookUpTable_k_segements
-
 sns.set_theme(style="darkgrid")
 
+# Helper methods
 
-PROJECT_PATH = os.getcwd()
 
 def get_file_names(directory, number_of_files = -1):
     file_names = [name.rsplit('_',1)[0] for name in os.listdir(directory) if not os.path.isdir(f"{directory}{name}") and name.endswith("_memory.csv")]
@@ -57,22 +26,13 @@ def get_file_names(directory, number_of_files = -1):
         return file_names[:number_of_files]
     return file_names
 
+
 def run_simulation(directory, training, test, monotonically_increasing = True, k = 4, collection_interval = 2):
     
     # MODELS
     simulations = []
     
-    # LookUpTable_k_segements
-    task_model = LookUpTable_k_segements(k = k, monotonically_increasing = monotonically_increasing)
-    simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
-    simulations.append(simulation)
-    
-    
-    # FileSize_k_segements
-    task_model = FileSize_k_segements(k = k, monotonically_increasing = monotonically_increasing)
-    simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
-    simulations.append(simulation)
-    
+
     # PeakMemory_k_segemnts 
     task_model = PeakMemory_k_segemnts(k = k, monotonically_increasing = monotonically_increasing)
     simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
@@ -99,25 +59,6 @@ def run_simulation(directory, training, test, monotonically_increasing = True, k
     simulation = Simulation(task_model, directory, retry_mode = 'partial', provided_file_names = training)
     simulations.append(simulation)
     
-    # WITT LR MEAN+- TASK MODEL 
-    task_model = WittTaskModel(mode = "mean+-")
-    simulation = Simulation(task_model, directory, retry_mode = 'full', provided_file_names = training)
-    simulations.append(simulation)
-
-    # TOVAR TASK MODEL - full retry
-    task_model = TovarTaskModel()
-    simulation = Simulation(task_model, directory, retry_mode = 'full', provided_file_names = training)
-    simulations.append(simulation)
-    
-     # TOVAR TASK MODEL - tovar retry
-    task_model = TovarTaskModel()
-    simulation = Simulation(task_model, directory, retry_mode = 'tovar', provided_file_names = training)
-    simulations.append(simulation)
-    
-    # Default Model
-    task_model = DefaultModel()
-    simulation = Simulation(task_model, directory, retry_mode = 'full', provided_file_names = training)
-    simulations.append(simulation)
     
     selected_k ,waste, retries, runtimes = [0 for _ in range(len(simulations))],[0 for _ in range(len(simulations))],[0 for _ in range(len(simulations))],[0 for _ in range(len(simulations))]
     for file_name in test:
@@ -129,7 +70,6 @@ def run_simulation(directory, training, test, monotonically_increasing = True, k
             retries[i] += result[1]
             runtimes[i] += (result[2] * collection_interval)
     
-    
     avg_waste = list(map(lambda w: w / len(test), waste))
     avg_retries = list(map(lambda r: r / len(test), retries))
     avg_runtime = list(map(lambda r: r / len(test), runtimes))
@@ -137,9 +77,15 @@ def run_simulation(directory, training, test, monotonically_increasing = True, k
     return selected_k, avg_waste, avg_retries, avg_runtime
 
 
-def benchmark_task(task_dir = f'{BASE_DIR}/eager/markduplicates'):
-    directory = task_dir
-    file_names_orig = get_file_names(directory)
+# OUTPUT = ( [Waste: [Witt: 25, Tovar: 25, k-segments:25], [50] , [75]], [Retries], [Runtime])
+def benchmark_task(task_dir = '/eager/markduplicates', base_directory = BASE_DIR):
+    directory = f'{base_directory}/{task_dir}'
+    file_names_orig = []
+    file_order = get_file_order(directory)
+    if file_order != None:
+        file_names_orig = file_order
+    else:
+        file_names_orig = get_file_names(directory)
 
     percentages = [0.25, 0.5, 0.75]
 
@@ -167,22 +113,48 @@ def benchmark_task(task_dir = f'{BASE_DIR}/eager/markduplicates'):
 
     return (selected_k_List, y_waste, y_retries, y_runtime)
 
-
-
+def record_file_order(workflow_tasks, base_directory, depth):
+    if depth > 1:
+        return
+    f = open(f"{base_directory}/file_order.txt", "w")
+    for task in workflow_tasks:
+        basename = os.path.basename(task)
+        f.write(f"{basename}\n")
+        if depth > 0:
+            continue
+        record_file_order(get_file_names(task), f'{base_directory}/{basename}', depth+1)
+        
+def get_file_order(base_directory):
+    try:
+        with open(f'{base_directory}/file_order.txt') as f:
+            return f.read().splitlines()
+    except:
+        return None
+    
 
 if __name__ == "__main__":
-    base_directory_sarek = f'{BASE_DIR}/sarek'
-    base_directory_eager = f'{BASE_DIR}/eager'
-    
-    workflow_tasks_sarek = [os.path.join(base_directory_sarek, item) for item in os.listdir(base_directory_sarek) if os.path.isdir(os.path.join(base_directory_sarek, item))]
-    workflow_tasks_sarek = [task for task in workflow_tasks_sarek if len(os.listdir(task)) > 40]
+    base_directory = f'{BASE_DIR}/sarek'
+    workflow_tasks = []
+    file_order = get_file_order(base_directory)
+    if file_order != None:
+        workflow_tasks = file_order
+    else:
+        workflow_tasks = [os.path.join(base_directory, item) for item in os.listdir(base_directory) if os.path.isdir(os.path.join(base_directory, item))]
+        workflow_tasks = [task for task in workflow_tasks if len(os.listdir(task)) > 40]
+        workflow_tasks = list(map(os.path.basename, workflow_tasks))
 
-    workflow_tasks_eager = [os.path.join(base_directory_eager, item) for item in os.listdir(base_directory_eager) if os.path.isdir(os.path.join(base_directory_eager, item))]
-    workflow_tasks_eager = [task for task in workflow_tasks_eager if len(os.listdir(task)) > 40]
-    
-    workflow_tasks = workflow_tasks_sarek #+ workflow_tasks_eager
-    #workflow_tasks = workflow_tasks_eager
-    
+    base_directoryEager = f'{BASE_DIR}/eager'
+    workflow_tasks_eager = []
+    file_order = get_file_order(base_directoryEager)
+    if file_order != None:
+        workflow_tasks_eager = file_order
+    else:
+        workflow_tasks_eager = [os.path.join(base_directoryEager, item) for item in os.listdir(base_directoryEager) if os.path.isdir(os.path.join(base_directoryEager, item))]
+        workflow_tasks_eager = [task for task in workflow_tasks_eager if len(os.listdir(task)) > 40]
+        workflow_tasks_eager = list(map(os.path.basename, workflow_tasks_eager))
+
+    workflow_tasks = []
+        
     categories = ["selecktive k","Wastage", "Retries", "Runtime"]
     percentages = ["25%", "50%", "75%"]
 
@@ -193,13 +165,13 @@ if __name__ == "__main__":
     runtime = []
     # 0 = WASTE, 1 = RETRIES, 2 = RUNTIME
     for task in workflow_tasks:
-        r = benchmark_task(task)
+        r = benchmark_task(task, base_directory)
         if r == -1:
             continue
+        k_selected.append(r[0])
         storageWaste.append(r[1])
         retries.append(r[2])
         runtime.append(r[3])
-        
         task_name = os.path.basename(task)
         m = ', '.join(map(str, r[0][2]))
         print(f'{task_name}')
@@ -207,13 +179,29 @@ if __name__ == "__main__":
             for j, percentage in enumerate(percentages): 
                 print(f'{category} {percentage}: {r[i][j]}')
     
-    models = ["LookUpTable_k_segements", "FileSize_k_segements", "PeakMemory_k_segemnts", "FileEvents_k_segements", "KSegments retry: selective", "KSegments retry: partial", "WITT LR MEAN+- TASK MODEL", "TOVAR TASK MODEL - full retry", "TOVAR TASK MODEL - tovar retry", "Default Model"]  
+    for task in workflow_tasks_eager:
+        r = benchmark_task(task, base_directoryEager)
+        if r == -1:
+            continue
+        k_selected.append(r[0])
+        storageWaste.append(r[1])
+        retries.append(r[2])
+        runtime.append(r[3])
+        task_name = os.path.basename(task)
+        m = ', '.join(map(str, r[0][2]))
+        print(f'{task_name}')
+        for i, category in enumerate(categories): 
+            for j, percentage in enumerate(percentages): 
+                print(f'{category} {percentage}: {r[i][j]}')
+                
+    
+    models = ["PeakMemory_k_segemnts", "FileEvents_k_segements", "KSegments retry: selective", "KSegments retry: partial"]  
     dictObject = {
         "models": models,
+        "k_selected": k_selected,
         "storageWaste": storageWaste,
         "retries": retries,
         "runtime": runtime,
     }
-    with open("allModlesResults.pickle", "wb") as file:
+    with open("updateDirs02.pickle", "wb") as file:
         pickle.dump(dictObject, file, protocol=pickle.HIGHEST_PROTOCOL)
-        

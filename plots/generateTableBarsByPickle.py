@@ -32,7 +32,7 @@ def readDictPickleFile(filePath):
 
 
 def plotAllModelsWasteHandler():
-    resultDict = readDictPickleFile("allModlesResults.pickle")
+    resultDict = readDictPickleFile("updateDirs.pickle")
     
     plotWastageBarsDynamic(resultDict["storageWaste"], resultDict["models"])
 

@@ -43,8 +43,9 @@ from tsb_resource_allocation.file_events_model import FileEventsModel
 from tsb_resource_allocation.default_model import DefaultModel
 from tsb_resource_allocation.kSegementVariations.fileEvents_k_segments import FileEvents_k_segements
 from tsb_resource_allocation.kSegementVariations.peakMemory_k_segments import PeakMemory_k_segemnts
-from tsb_resource_allocation.kSegementVariations.fileSize_k_segments import FileSize_k_segements
-from tsb_resource_allocation.kSegementVariations.lookUpTable_k_segments import LookUpTable_k_segements
+from tsb_resource_allocation.kSegementVariations.segementLength_k_segments import SegementLength_k_segements
+
+from tsb_resource_allocation.kSegementVariations.memoryLookUpTable_k_segmetns import MemoryLookUpTable_k_segemetns
 
 sns.set_theme(style="darkgrid")
 
@@ -61,64 +62,11 @@ def run_simulation(directory, training, test, monotonically_increasing = True, k
     
     # MODELS
     simulations = []
-    
-    # LookUpTable_k_segements
-    task_model = LookUpTable_k_segements(k = k, monotonically_increasing = monotonically_increasing)
-    simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
-    simulations.append(simulation)
-    
-    
-    # FileSize_k_segements
-    task_model = FileSize_k_segements(k = k, monotonically_increasing = monotonically_increasing)
-    simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
-    simulations.append(simulation)
-    
-    # PeakMemory_k_segemnts 
-    task_model = PeakMemory_k_segemnts(k = k, monotonically_increasing = monotonically_increasing)
-    simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
-    simulations.append(simulation)
-    
-    
     # FileEvents_k_segements
-    task_model = FileEvents_k_segements(k = k, monotonically_increasing = monotonically_increasing)
+    task_model = MemoryLookUpTable_k_segemetns(k = k, monotonically_increasing = monotonically_increasing)
     simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
     simulations.append(simulation)
-    
-    # KSegments retry: selective
-    task_model = KSegmentsModel(k = k, monotonically_increasing = monotonically_increasing)
-    simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
-    simulations.append(simulation)
-    
-    # KSegments retry: selective - NO UNDERPREDICTION
-    task_model = KSegmentsModel(k = k, monotonically_increasing = monotonically_increasing, time_mode = -1)
-    simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
-    #simulations.append(simulation)
-    
-    # KSegments retry: partial
-    task_model = KSegmentsModel(k = k, monotonically_increasing = monotonically_increasing)
-    simulation = Simulation(task_model, directory, retry_mode = 'partial', provided_file_names = training)
-    simulations.append(simulation)
-    
-    # WITT LR MEAN+- TASK MODEL 
-    task_model = WittTaskModel(mode = "mean+-")
-    simulation = Simulation(task_model, directory, retry_mode = 'full', provided_file_names = training)
-    simulations.append(simulation)
-
-    # TOVAR TASK MODEL - full retry
-    task_model = TovarTaskModel()
-    simulation = Simulation(task_model, directory, retry_mode = 'full', provided_file_names = training)
-    simulations.append(simulation)
-    
-     # TOVAR TASK MODEL - tovar retry
-    task_model = TovarTaskModel()
-    simulation = Simulation(task_model, directory, retry_mode = 'tovar', provided_file_names = training)
-    simulations.append(simulation)
-    
-    # Default Model
-    task_model = DefaultModel()
-    simulation = Simulation(task_model, directory, retry_mode = 'full', provided_file_names = training)
-    simulations.append(simulation)
-    
+        
     selected_k ,waste, retries, runtimes = [0 for _ in range(len(simulations))],[0 for _ in range(len(simulations))],[0 for _ in range(len(simulations))],[0 for _ in range(len(simulations))]
     for file_name in test:
         for i,s in enumerate(simulations):
@@ -181,8 +129,10 @@ if __name__ == "__main__":
     workflow_tasks_eager = [task for task in workflow_tasks_eager if len(os.listdir(task)) > 40]
     
     workflow_tasks = workflow_tasks_sarek #+ workflow_tasks_eager
-    #workflow_tasks = workflow_tasks_eager
+    workflow_tasks = workflow_tasks_eager
     
+
+
     categories = ["selecktive k","Wastage", "Retries", "Runtime"]
     percentages = ["25%", "50%", "75%"]
 
@@ -196,24 +146,24 @@ if __name__ == "__main__":
         r = benchmark_task(task)
         if r == -1:
             continue
+        k_selected.append(r[0])
         storageWaste.append(r[1])
         retries.append(r[2])
         runtime.append(r[3])
-        
         task_name = os.path.basename(task)
         m = ', '.join(map(str, r[0][2]))
         print(f'{task_name}')
         for i, category in enumerate(categories): 
             for j, percentage in enumerate(percentages): 
                 print(f'{category} {percentage}: {r[i][j]}')
-    
-    models = ["LookUpTable_k_segements", "FileSize_k_segements", "PeakMemory_k_segemnts", "FileEvents_k_segements", "KSegments retry: selective", "KSegments retry: partial", "WITT LR MEAN+- TASK MODEL", "TOVAR TASK MODEL - full retry", "TOVAR TASK MODEL - tovar retry", "Default Model"]  
+                
+    models = ["memoryLookUpTable_k_segements"]  
     dictObject = {
         "models": models,
+        "k_selected": k_selected,
         "storageWaste": storageWaste,
         "retries": retries,
         "runtime": runtime,
     }
-    with open("allModlesResults.pickle", "wb") as file:
+    with open("pickleFiles\\memoryLookUpTable.pickle", "wb") as file:
         pickle.dump(dictObject, file, protocol=pickle.HIGHEST_PROTOCOL)
-        

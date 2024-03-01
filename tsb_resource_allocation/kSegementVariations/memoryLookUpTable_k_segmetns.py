@@ -24,12 +24,9 @@ class MemoryLookUpTable_k_segemetns(KSegmentsModel):
 
 
     def calculate_k(self):
-        memoryValueTrainigsFile = []
         
-        for memoryFile,_,x in self.files:
-            memoryArray = np.array(list(map(lambda d: (len(d['_value'])), memoryFile)))
-            memoryValueTrainigsFile.append(memoryArray)
-            
+        
+        memoryValueTrainigsFile = list(map(lambda d: (d[0]['_value']), self.files))            
         
         k_list = []
         numberOf_k_list = []
@@ -39,7 +36,7 @@ class MemoryLookUpTable_k_segemetns(KSegmentsModel):
             trainingsFile_k = self.findChangePoints(memoryArray)
             if trainingsFile_k in k_list:
                 index = k_list.index(trainingsFile_k)
-                numberOf_k_list[index] =+ 1
+                numberOf_k_list[index] += 1
                 
             else:
                 k_list.append(trainingsFile_k)
@@ -64,11 +61,11 @@ class MemoryLookUpTable_k_segemetns(KSegmentsModel):
         currentHigh = True
         for memoryLogSample in memoryArray:
             if memoryLogSample <= avaerage and currentHigh:
-                k =+ 1
+                k += 1
                 currentLow = True
                 currentHigh = False
             if memoryLogSample > avaerage and currentLow:
-                k =+ 1
+                k += 1
                 currentHigh = True
                 currentLow = False
         return k
