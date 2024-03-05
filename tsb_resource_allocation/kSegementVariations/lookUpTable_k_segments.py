@@ -15,7 +15,7 @@ range
 NUMBER_OF_PARTS = 10
 START_K = 4
 
-class LookUpTable_k_segements(KSegmentsModel):
+class LookUpTable_k_segments(KSegmentsModel):
     
     def __init__(
             self,
@@ -41,10 +41,6 @@ class LookUpTable_k_segements(KSegmentsModel):
     
     
     
-    def valid_k(self):
-        for y,_,x in self.files:
-            if len(y) < self.k:
-                self.k = len(y)
         
     # Numeric misstake get covered
     def buildLookUpTable(self, memoryLenList):
@@ -75,5 +71,10 @@ class LookUpTable_k_segements(KSegmentsModel):
     def selectLookUpTablePart(self, smallestSize, strongestFileSizeIndex):
         return int((smallestSize / NUMBER_OF_PARTS) + (strongestFileSizeIndex))
     
+    def valid_k(self):
+        for y,_,x in self.files:
+            if len(y) < self.k:
+                self.k = len(y)
+        
     def selectK(self):
         pass

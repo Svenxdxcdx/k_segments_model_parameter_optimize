@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os 
 import datetime
-class FileEvents_k_segements(KSegmentsModel):
+class FileEvents_k_segments(KSegmentsModel):
     
     def __init__(
             self,

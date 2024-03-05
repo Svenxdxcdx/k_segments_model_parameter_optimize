@@ -22,12 +22,12 @@ from tsb_resource_allocation.k_segments_model import KSegmentsModel
 from tsb_resource_allocation.file_events_model import FileEventsModel
 from tsb_resource_allocation.default_model import DefaultModel
 
-#from tsb_resource_allocation.kSegementVariations.LookUpTable_k_segments import LookUpTable_k_segments
-from tsb_resource_allocation.kSegementVariations.averageMemory_k_segments import AverageMemory_k_segments
+
+from tsb_resource_allocation.kSegementVariations.activeFeedbackModel_k_segments import ActiveFeedbackModel_k_segments
 
 sns.set_theme(style="darkgrid")
 
-class AverageMemory_test(unittest.TestCase):
+class FileEvents_test(unittest.TestCase):
     
     def test_run(self):
         
@@ -74,7 +74,7 @@ def run_simulation02(directory, training, test, monotonically_increasing = True,
     
     # KSegments retry: selective
 
-    task_model = AverageMemory_k_segments(k = k, monotonically_increasing = monotonically_increasing)
+    task_model = ActiveFeedbackModel_k_segments(k = k, monotonically_increasing = monotonically_increasing)
     simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
     simulations.append(simulation)
 
@@ -92,6 +92,8 @@ def run_simulation02(directory, training, test, monotonically_increasing = True,
     avg_retries = list(map(lambda r: r / len(test), retries))
     avg_runtime = list(map(lambda r: r / len(test), runtimes))
     
+    #task_model.plot_ram_regression(4)
+    #plt.show()
     return avg_waste, avg_retries, avg_runtime
 
 

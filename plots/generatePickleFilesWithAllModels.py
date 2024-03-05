@@ -41,10 +41,10 @@ from tsb_resource_allocation.simulation import Simulation
 from tsb_resource_allocation.k_segments_model import KSegmentsModel
 from tsb_resource_allocation.file_events_model import FileEventsModel
 from tsb_resource_allocation.default_model import DefaultModel
-from tsb_resource_allocation.kSegementVariations.fileEvents_k_segments import FileEvents_k_segements
-from tsb_resource_allocation.kSegementVariations.peakMemory_k_segments import PeakMemory_k_segemnts
-from tsb_resource_allocation.kSegementVariations.fileSize_k_segments import FileSize_k_segements
-from tsb_resource_allocation.kSegementVariations.lookUpTable_k_segments import LookUpTable_k_segements
+from tsb_resource_allocation.kSegementVariations.fileEvents_k_segments import FileEvents_k_segments
+from tsb_resource_allocation.kSegementVariations.peakMemory_k_segments import PeakMemory_k_segments
+from tsb_resource_allocation.kSegementVariations.fileSize_k_segments import FileSize_k_segments
+from tsb_resource_allocation.kSegementVariations.lookUpTable_k_segments import LookUpTable_k_segments
 
 sns.set_theme(style="darkgrid")
 
@@ -62,25 +62,25 @@ def run_simulation(directory, training, test, monotonically_increasing = True, k
     # MODELS
     simulations = []
     
-    # LookUpTable_k_segements
-    task_model = LookUpTable_k_segements(k = k, monotonically_increasing = monotonically_increasing)
+    # LookUpTable_k_segments
+    task_model = LookUpTable_k_segments(k = k, monotonically_increasing = monotonically_increasing)
     simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
     simulations.append(simulation)
     
     
-    # FileSize_k_segements
-    task_model = FileSize_k_segements(k = k, monotonically_increasing = monotonically_increasing)
+    # FileSize_k_segments
+    task_model = FileSize_k_segments(k = k, monotonically_increasing = monotonically_increasing)
     simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
     simulations.append(simulation)
     
-    # PeakMemory_k_segemnts 
-    task_model = PeakMemory_k_segemnts(k = k, monotonically_increasing = monotonically_increasing)
+    # PeakMemory_k_segments 
+    task_model = PeakMemory_k_segments(k = k, monotonically_increasing = monotonically_increasing)
     simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
     simulations.append(simulation)
     
     
-    # FileEvents_k_segements
-    task_model = FileEvents_k_segements(k = k, monotonically_increasing = monotonically_increasing)
+    # FileEvents_k_segments
+    task_model = FileEvents_k_segments(k = k, monotonically_increasing = monotonically_increasing)
     simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
     simulations.append(simulation)
     
@@ -207,7 +207,7 @@ if __name__ == "__main__":
             for j, percentage in enumerate(percentages): 
                 print(f'{category} {percentage}: {r[i][j]}')
     
-    models = ["LookUpTable_k_segements", "FileSize_k_segements", "PeakMemory_k_segemnts", "FileEvents_k_segements", "KSegments retry: selective", "KSegments retry: partial", "WITT LR MEAN+- TASK MODEL", "TOVAR TASK MODEL - full retry", "TOVAR TASK MODEL - tovar retry", "Default Model"]  
+    models = ["LookUpTable_k_segments", "FileSize_k_segments", "PeakMemory_k_segments", "FileEvents_k_segments", "KSegments retry: selective", "KSegments retry: partial", "WITT LR MEAN+- TASK MODEL", "TOVAR TASK MODEL - full retry", "TOVAR TASK MODEL - tovar retry", "Default Model"]  
     dictObject = {
         "models": models,
         "storageWaste": storageWaste,

@@ -13,8 +13,8 @@ from tsb_resource_allocation.simulation import Simulation
 from tsb_resource_allocation.k_segments_model import KSegmentsModel
 from tsb_resource_allocation.file_events_model import FileEventsModel
 from tsb_resource_allocation.default_model import DefaultModel
-from tsb_resource_allocation.kSegementVariations.fileEvents_k_segments import FileEvents_k_segements
-from tsb_resource_allocation.kSegementVariations.peakMemory_k_segments import PeakMemory_k_segemnts
+from tsb_resource_allocation.kSegementVariations.fileEvents_k_segments import FileEvents_k_segments
+from tsb_resource_allocation.kSegementVariations.peakMemory_k_segments import PeakMemory_k_segments
 sns.set_theme(style="darkgrid")
 
 # Helper methods
@@ -33,14 +33,14 @@ def run_simulation(directory, training, test, monotonically_increasing = True, k
     simulations = []
     
 
-    # PeakMemory_k_segemnts 
-    task_model = PeakMemory_k_segemnts(k = k, monotonically_increasing = monotonically_increasing)
+    # PeakMemory_k_segments 
+    task_model = PeakMemory_k_segments(k = k, monotonically_increasing = monotonically_increasing)
     simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
     simulations.append(simulation)
     
     
-    # FileEvents_k_segements
-    task_model = FileEvents_k_segements(k = k, monotonically_increasing = monotonically_increasing)
+    # FileEvents_k_segments
+    task_model = FileEvents_k_segments(k = k, monotonically_increasing = monotonically_increasing)
     simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
     simulations.append(simulation)
     
@@ -195,7 +195,7 @@ if __name__ == "__main__":
                 print(f'{category} {percentage}: {r[i][j]}')
                 
     
-    models = ["PeakMemory_k_segemnts", "FileEvents_k_segements", "KSegments retry: selective", "KSegments retry: partial"]  
+    models = ["PeakMemory_k_segments", "FileEvents_k_segments", "KSegments retry: selective", "KSegments retry: partial"]  
     dictObject = {
         "models": models,
         "k_selected": k_selected,

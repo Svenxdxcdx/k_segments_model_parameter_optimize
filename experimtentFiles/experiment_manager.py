@@ -19,8 +19,20 @@ from tsb_resource_allocation.simulation import Simulation
 from tsb_resource_allocation.k_segments_model import KSegmentsModel
 from tsb_resource_allocation.file_events_model import FileEventsModel
 from tsb_resource_allocation.default_model import DefaultModel
-from tsb_resource_allocation.kSegementVariations.fileEvents_k_segments import FileEvents_k_segements
-from tsb_resource_allocation.kSegementVariations.peakMemory_k_segments import PeakMemory_k_segemnts
+
+from tsb_resource_allocation.kSegementVariations.fileEvents_k_segments import FileEvents_k_segments
+from tsb_resource_allocation.kSegementVariations.peakMemory_k_segments import PeakMemory_k_segments
+from tsb_resource_allocation.kSegementVariations.MemoryLookUpTable_k_segments import MemoryLookUpTable_k_segments
+
+from tsb_resource_allocation.kSegementVariations.memoryAndSegmentLengthCombind_k_segments import MemoryAndSegmentLengthCombind_k_segments
+from tsb_resource_allocation.kSegementVariations.segmentLength_k_segments import SegmentLength_k_segments
+from tsb_resource_allocation.kSegementVariations.lookUpTable_k_segments import LookUpTable_k_segments
+from tsb_resource_allocation.kSegementVariations.averageMemory_k_segments import AverageMemory_k_segments
+
+from tsb_resource_allocation.kSegementVariations.fileSize_k_segments import FileSize_k_segments
+
+from tsb_resource_allocation.kSegementVariations.activeFeedbackModel_k_segments import ActiveFeedbackModel_k_segments
+
 sns.set_theme(style="darkgrid")
 
 
@@ -51,12 +63,24 @@ class Experiment_Manager:
         # MODELS
         simulations = []
         
-        if self._mode == 'selective':
-            simulation = Simulation(self._simulations[self._currentRun], directory, retry_mode = 'selective', provided_file_names = training)
-        elif self._mode == 'partial': 
-            simulation = Simulation(self._simulations[self._currentRun], directory, retry_mode = 'partial', provided_file_names = training)
-            
+    
+        simulation = Simulation(self._simulations[self._currentRun], directory, retry_mode = 'selective', provided_file_names = training)
         simulations.append(simulation)
+                
+        simulation = Simulation(self._simulations[self._currentRun], directory, retry_mode = 'partial', provided_file_names = training)
+        simulations.append(simulation)
+    
+        #selectiv
+        task_model = KSegmentsModel(k = k, monotonically_increasing = monotonically_increasing)
+        simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
+        simulations.append(simulation)
+        
+        # KSegments retry: partial
+        task_model = KSegmentsModel(k = k, monotonically_increasing = monotonically_increasing)
+        simulation = Simulation(task_model, directory, retry_mode = 'partial', provided_file_names = training)
+        simulations.append(simulation)
+                
+        
         
         selected_k ,waste, retries, runtimes = [0 for _ in range(len(simulations))],[0 for _ in range(len(simulations))],[0 for _ in range(len(simulations))],[0 for _ in range(len(simulations))]
         for file_name in test:
@@ -193,7 +217,7 @@ class Experiment_Manager:
                     print(f'{category} {percentage}: {r[i][j]}')
         """         
         
-        models = [self._fileNames[self._currentRun] + "_" + self._mode]  
+        models = [self._fileNames[self._currentRun] + "_selective", self._fileNames[self._currentRun] + "_partial", "KSegmentsModel_selective", "KSegmentsModel_partial"]  
         dictObject = {
             "models": models,
             "k_selected": k_selected,
@@ -201,15 +225,16 @@ class Experiment_Manager:
             "retries": retries,
             "runtime": runtime,
         }
-        if os.path.exists("pickleFiles\\"+self._fileNames[self._currentRun] + ".pickle"):
-            os.remove("pickleFiles\\"+self._fileNames[self._currentRun] + ".pickle")
-        with open( "pickleFiles\\"+self._fileNames[self._currentRun] + "_" + self._mode + ".pickle", "wb") as file:
+        if os.path.exists("pickleFiles\\sarek\\"+self._fileNames[self._currentRun] + ".pickle"):
+            os.remove("pickleFiles\\sarek\\"+self._fileNames[self._currentRun] + ".pickle")
+        with open( "pickleFiles\\sarek\\"+self._fileNames[self._currentRun] + "_" + self._mode + ".pickle", "wb") as file:
             pickle.dump(dictObject, file, protocol=pickle.HIGHEST_PROTOCOL)
             
             
     def runAllExperiments(self):
          for i in range(self._maxRuns):
-            self._currentRun = i 
+            self._currentRun = i
+            print(self._fileNames[i]) 
             self.runOneExperiment()
             
             
@@ -221,23 +246,48 @@ if __name__ == "__main__":
     
     models = []
     fileNames = []
-    # PeakMemory_k_segemnts 
-    models.append(PeakMemory_k_segemnts(k = k, monotonically_increasing = monotonically_increasing))
-    fileNames.append("PeakMemory_k_segemnts")
-    
-    # FileEvents_k_segements
-    models.append(FileEvents_k_segements(k = k, monotonically_increasing = monotonically_increasing))
-    fileNames.append("FileEvents_k_segements")
-    
-    # KSegments retry: selective
-    models.append(KSegmentsModel(k = k, monotonically_increasing = monotonically_increasing))
-    fileNames.append("KSegmentsModel")
     
     
-    # KSegments retry: selective - NO UNDERPREDICTION
-    models.append(KSegmentsModel(k = k, monotonically_increasing = monotonically_increasing, time_mode = -1))
-    fileNames.append("KSegmentsModel_no_underprediction")
+    # PeakMemory_k_segments 
+    models.append(PeakMemory_k_segments(k = k, monotonically_increasing = monotonically_increasing))
+    fileNames.append("PeakMemory_k")
     
+    
+    # FileEvents_k_segments
+    models.append(FileEvents_k_segments(k = k, monotonically_increasing = monotonically_increasing))
+    fileNames.append("FileEvents_k")
+    
+    
+    #AverageMemory_k_segments
+    models.append(AverageMemory_k_segments(k = k, monotonically_increasing = monotonically_increasing))
+    fileNames.append("AverageMemory_k")
+
+    
+    #MemoryLookUpTable_k_segments
+    models.append(MemoryLookUpTable_k_segments(k = k, monotonically_increasing = monotonically_increasing))
+    fileNames.append("MemoryLookUpTable_k")
+
+    
+    #MemoryAndSegmentLengthCombind_k_segments
+    models.append(MemoryAndSegmentLengthCombind_k_segments(k = k, monotonically_increasing = monotonically_increasing))
+    fileNames.append("MemoryAndSegmentLengthCombind_k")
+    
+    #SegmentLength_k_segments
+    models.append(SegmentLength_k_segments(k = k, monotonically_increasing = monotonically_increasing))
+    fileNames.append("SegmentLength_k")
+    
+    #LookUpTable_k_segments
+    models.append(LookUpTable_k_segments(k = k, monotonically_increasing = monotonically_increasing))
+    fileNames.append("LookUpTable_k")
+    
+    
+    #FileSize_k_segments
+    models.append(FileSize_k_segments(k = k, monotonically_increasing = monotonically_increasing))
+    fileNames.append("FileSize_k")
+    
+    #ActiveFeedbackModel_k_segments
+    models.append(ActiveFeedbackModel_k_segments(k = k, monotonically_increasing = monotonically_increasing))
+    fileNames.append("ActiveFeedbackModel_k")
     
     experiment_Manager = Experiment_Manager(models, fileNames)
     experiment_Manager.runAllExperiments()

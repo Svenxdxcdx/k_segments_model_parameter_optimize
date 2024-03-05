@@ -6,7 +6,7 @@ import os
 import datetime
 from scipy.signal import find_peaks
 
-class PeakMemory_k_segemnts(KSegmentsModel):
+class PeakMemory_k_segments(KSegmentsModel):
     def __init__(
             self,
             monotonically_increasing = True,

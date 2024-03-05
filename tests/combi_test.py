@@ -22,7 +22,7 @@ from tsb_resource_allocation.k_segments_model import KSegmentsModel
 from tsb_resource_allocation.file_events_model import FileEventsModel
 from tsb_resource_allocation.default_model import DefaultModel
 
-from tsb_resource_allocation.kSegementVariations.peakMemory_k_segments import PeakMemory_k_segemnts
+from tsb_resource_allocation.kSegementVariations.peakMemory_k_segments import PeakMemory_k_segments
 from tsb_resource_allocation.kSegementVariations.memoryAndSegmentLengthCombind_k_segments import MemoryAndSegmentLengthCombind_k_segments
 
 sns.set_theme(style="darkgrid")

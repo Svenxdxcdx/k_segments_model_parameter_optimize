@@ -13,7 +13,7 @@ SEVENTHY_FIVE = 2
 # Only for 4
 def plotWastageBars(results):
     twentyFiveAverage, fifthyAverage, seventyFiveAverage = calculateAverageWaste(results)
-    models = ["PeakMemory_k_segemnts", "FileEvents_k_segements", "KSegments retry: selective", "KSegments retry: partial"]
+    models = ["PeakMemory_k_segments", "FileEvents_k_segments", "KSegments retry: selective", "KSegments retry: partial"]
     
     df = pd.DataFrame({"25%": twentyFiveAverage,
                        "50%": fifthyAverage,
@@ -30,7 +30,8 @@ def plotWastageBarsDynamic(results, models):
                        "50%": fifthyAverage,
                        "75%": seventyFiveAverage}, index=models)
     ax = df.plot.bar(rot=0, color={"25%": "blue", "50%": "orange",  "75%": "green"})
-    
+    for container in ax.containers:
+        ax.bar_label(container)
 
 def plotSelectedK_BarsDynamic(results, models):
     twentyFiveAverage, fifthyAverage, seventyFiveAverage = calculateAverageWaste(results)
@@ -41,6 +42,7 @@ def plotSelectedK_BarsDynamic(results, models):
                        "75%": seventyFiveAverage}, index=models)
     ax = df.plot.bar(rot=0, color={"25%": "blue", "50%": "orange",  "75%": "green"})
     
+
     pass
 
 def calculateAverageWaste(results):

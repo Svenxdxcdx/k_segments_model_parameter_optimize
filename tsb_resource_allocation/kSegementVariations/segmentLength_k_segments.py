@@ -8,7 +8,7 @@ import datetime
 
 BASE_MODLE_TRAININGS_K = 4
 
-class SegementLength_k_segements(KSegmentsModel):
+class SegmentLength_k_segments(KSegmentsModel):
     def __init__(
             self,
             monotonically_increasing = True,

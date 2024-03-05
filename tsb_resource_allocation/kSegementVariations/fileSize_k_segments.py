@@ -7,7 +7,7 @@ import datetime
 """
 The retry model gets a k based on the avearge file size divide by 4. (If the avagere file will be bigger then 4)
 """
-class FileSize_k_segements(KSegmentsModel):
+class FileSize_k_segments(KSegmentsModel):
     
     def __init__(
             self,

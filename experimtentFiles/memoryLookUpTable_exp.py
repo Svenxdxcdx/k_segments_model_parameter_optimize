@@ -41,11 +41,11 @@ from tsb_resource_allocation.simulation import Simulation
 from tsb_resource_allocation.k_segments_model import KSegmentsModel
 from tsb_resource_allocation.file_events_model import FileEventsModel
 from tsb_resource_allocation.default_model import DefaultModel
-from tsb_resource_allocation.kSegementVariations.fileEvents_k_segments import FileEvents_k_segements
-from tsb_resource_allocation.kSegementVariations.peakMemory_k_segments import PeakMemory_k_segemnts
-from tsb_resource_allocation.kSegementVariations.segementLength_k_segments import SegementLength_k_segements
+from tsb_resource_allocation.kSegementVariations.fileEvents_k_segments import FileEvents_k_segments
+from tsb_resource_allocation.kSegementVariations.peakMemory_k_segments import PeakMemory_k_segments
+from tsb_resource_allocation.kSegementVariations.segmentLength_k_segments import SegementLength_k_segements
 
-from tsb_resource_allocation.kSegementVariations.memoryLookUpTable_k_segmetns import MemoryLookUpTable_k_segemetns
+from tsb_resource_allocation.kSegementVariations.MemoryLookUpTable_k_segments import MemoryLookUpTable_k_segments
 
 sns.set_theme(style="darkgrid")
 
@@ -62,8 +62,8 @@ def run_simulation(directory, training, test, monotonically_increasing = True, k
     
     # MODELS
     simulations = []
-    # FileEvents_k_segements
-    task_model = MemoryLookUpTable_k_segemetns(k = k, monotonically_increasing = monotonically_increasing)
+    # FileEvents_k_segments
+    task_model = MemoryLookUpTable_k_segments(k = k, monotonically_increasing = monotonically_increasing)
     simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
     simulations.append(simulation)
         
@@ -157,7 +157,7 @@ if __name__ == "__main__":
             for j, percentage in enumerate(percentages): 
                 print(f'{category} {percentage}: {r[i][j]}')
                 
-    models = ["memoryLookUpTable_k_segements"]  
+    models = ["memoryLookUpTable_k_segments"]  
     dictObject = {
         "models": models,
         "k_selected": k_selected,

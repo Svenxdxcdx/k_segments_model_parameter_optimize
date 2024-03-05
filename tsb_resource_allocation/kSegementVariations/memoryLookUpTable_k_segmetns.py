@@ -6,7 +6,7 @@ import os
 import datetime
 
 
-class MemoryLookUpTable_k_segemetns(KSegmentsModel):
+class MemoryLookUpTable_k_segments(KSegmentsModel):
     
     def __init__(
         self,
