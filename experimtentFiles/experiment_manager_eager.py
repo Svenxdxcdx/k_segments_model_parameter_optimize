@@ -25,15 +25,12 @@ from tsb_resource_allocation.default_model import DefaultModel
 
 from tsb_resource_allocation.kSegementVariations.fileEvents_k_segments import FileEvents_k_segments
 from tsb_resource_allocation.kSegementVariations.peakMemory_k_segments import PeakMemory_k_segments
-from tsb_resource_allocation.kSegementVariations.mostFrequentK_MCP_k_segmetns import MemoryLookUpTable_k_segments
+from tsb_resource_allocation.kSegementVariations.mostFrequentK_MCP_k_segmetns import MostFrequentK_MCP_k_segmetns
 
 from tsb_resource_allocation.kSegementVariations.memoryAndSegmentLengthCombind_k_segments import MemoryAndSegmentLengthCombind_k_segments
 from tsb_resource_allocation.kSegementVariations.segmentLength_k_segments import SegmentLength_k_segments
-from tsb_resource_allocation.kSegementVariations.sameFileSizeMCP_k_segments import LookUpTable_k_segments
-from tsb_resource_allocation.kSegementVariations.memoryChangePoints_k_segments import AverageMemory_k_segments
-
-from tsb_resource_allocation.kSegementVariations.fileSize_k_segments import FileSize_k_segments
-
+from tsb_resource_allocation.kSegementVariations.sameFileSizeMCP_k_segments import SameFileSizeMCP_k_segments
+from tsb_resource_allocation.kSegementVariations.memoryChangePoints_k_segments import MemoryChangePoints_k_segments
 from tsb_resource_allocation.kSegementVariations.activeFeedbackModel_k_segments import ActiveFeedbackModel_k_segments
 
 sns.set_theme(style="darkgrid")
@@ -267,21 +264,15 @@ if __name__ == "__main__":
     models.append(FileEvents_k_segments(k = k, monotonically_increasing = monotonically_increasing))
     fileNames.append("FileEvents_k")
     
-    
     #AverageMemory_k_segments
-    models.append(AverageMemory_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    models.append(AverageMemory_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    fileNames.append("AverageMemory_k")
-
+    models.append(MemoryChangePoints_k_segments(k = k, monotonically_increasing = monotonically_increasing))
+    models.append(MemoryChangePoints_k_segments(k = k, monotonically_increasing = monotonically_increasing))
+    fileNames.append("MemoryChangePoints_k")
     
     #MemoryLookUpTable_k_segments
-    models.append(MemoryLookUpTable_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    models.append(MemoryLookUpTable_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    fileNames.append("MemoryLookUpTable_k")
-
-
-
-
+    models.append(MostFrequentK_MCP_k_segmetns(k = k, monotonically_increasing = monotonically_increasing))
+    models.append(MostFrequentK_MCP_k_segmetns(k = k, monotonically_increasing = monotonically_increasing))
+    fileNames.append("MostFrequentK_MCP_k")
     
     #MemoryAndSegmentLengthCombind_k_segments
     models.append(MemoryAndSegmentLengthCombind_k_segments(k = k, monotonically_increasing = monotonically_increasing))
@@ -294,15 +285,10 @@ if __name__ == "__main__":
     fileNames.append("SegmentLength_k")
     
     #LookUpTable_k_segments
-    models.append(LookUpTable_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    models.append(LookUpTable_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    fileNames.append("LookUpTable_k")
+    models.append(SameFileSizeMCP_k_segments(k = k, monotonically_increasing = monotonically_increasing))
+    models.append(SameFileSizeMCP_k_segments(k = k, monotonically_increasing = monotonically_increasing))
+    fileNames.append("SameFileSizeMCP_k")
     
-    
-    #FileSize_k_segments
-    models.append(FileSize_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    models.append(FileSize_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    fileNames.append("FileSize_k")
     
     #ActiveFeedbackModel_k_segments
     models.append(ActiveFeedbackModel_k_segments(k = k, monotonically_increasing = monotonically_increasing))

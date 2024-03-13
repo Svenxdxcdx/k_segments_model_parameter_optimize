@@ -22,7 +22,7 @@ from tsb_resource_allocation.k_segments_model import KSegmentsModel
 from tsb_resource_allocation.file_events_model import FileEventsModel
 from tsb_resource_allocation.default_model import DefaultModel
 
-from tsb_resource_allocation.kSegementVariations.lookUpTable_k_segments import LookUpTable_k_segments
+from tsb_resource_allocation.kSegementVariations.sameFileSizeMCP_k_segments import LookUpTable_k_segments
 
 sns.set_theme(style="darkgrid")
 

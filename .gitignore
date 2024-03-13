@@ -139,3 +139,4 @@ ui-tests/.pnp.*
 
 # pickle 
 *.pickle
+*.png

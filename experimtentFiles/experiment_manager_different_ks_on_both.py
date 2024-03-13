@@ -1,7 +1,8 @@
 BASE_DIR = 'C:\\privat\\Bachelor_Work\\pytonProject\\update-traces\\k-Segments-traces-main' 
 
-WRITE_DIR = "eager"
+#WRITE_DIR = "eager"
 #WRITE_DIR = "sarek"
+WRITE_DIR = "bothDifferentKs"
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -25,29 +26,24 @@ from tsb_resource_allocation.default_model import DefaultModel
 
 from tsb_resource_allocation.kSegementVariations.fileEvents_k_segments import FileEvents_k_segments
 from tsb_resource_allocation.kSegementVariations.peakMemory_k_segments import PeakMemory_k_segments
-from tsb_resource_allocation.kSegementVariations.mostFrequentK_MCP_k_segmetns import MemoryLookUpTable_k_segments
+from tsb_resource_allocation.kSegementVariations.mostFrequentK_MCP_k_segmetns import MostFrequentK_MCP_k_segmetns
 
 from tsb_resource_allocation.kSegementVariations.memoryAndSegmentLengthCombind_k_segments import MemoryAndSegmentLengthCombind_k_segments
 from tsb_resource_allocation.kSegementVariations.segmentLength_k_segments import SegmentLength_k_segments
-from tsb_resource_allocation.kSegementVariations.sameFileSizeMCP_k_segments import LookUpTable_k_segments
-from tsb_resource_allocation.kSegementVariations.memoryChangePoints_k_segments import AverageMemory_k_segments
-
-from tsb_resource_allocation.kSegementVariations.fileSize_k_segments import FileSize_k_segments
-
+from tsb_resource_allocation.kSegementVariations.sameFileSizeMCP_k_segments import SameFileSizeMCP_k_segments
+from tsb_resource_allocation.kSegementVariations.memoryChangePoints_k_segments import MemoryChangePoints_k_segments
 from tsb_resource_allocation.kSegementVariations.activeFeedbackModel_k_segments import ActiveFeedbackModel_k_segments
 
 sns.set_theme(style="darkgrid")
 
 
 
-class Experiment_Manager:
+class ExperimentManagerDifferentKsOnBoth:
     
     _mode  = 'selective'
     
-    def __init__(self, simulations, fileNames):
-        self._simulations = simulations
-        self._fileNames = fileNames
-        self._maxRuns = len(fileNames)
+    def __init__(self):
+        self._maxRuns = 7
         self._currentRun = 0
         self._currentModel = 0
         
@@ -68,19 +64,14 @@ class Experiment_Manager:
         simulations = []
         
     
-        simulation = Simulation(self._simulations[self._currentModel], directory, retry_mode = 'selective', provided_file_names = training)
-        simulations.append(simulation)
-                
-        simulation = Simulation(self._simulations[self._currentModel + 1], directory, retry_mode = 'partial', provided_file_names = training)
-        simulations.append(simulation)
     
         #selectiv
-        task_model = KSegmentsModel(k = k, monotonically_increasing = monotonically_increasing)
+        task_model = KSegmentsModel(k = self._currentRun, monotonically_increasing = monotonically_increasing)
         simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
         simulations.append(simulation)
         
         # KSegments retry: partial
-        task_model = KSegmentsModel(k = k, monotonically_increasing = monotonically_increasing)
+        task_model = KSegmentsModel(k = self._currentRun, monotonically_increasing = monotonically_increasing)
         simulation = Simulation(task_model, directory, retry_mode = 'partial', provided_file_names = training)
         simulations.append(simulation)
                 
@@ -159,27 +150,20 @@ class Experiment_Manager:
     
 
     def runOneExperiment(self):
-        base_directory = f'{BASE_DIR}/'+ WRITE_DIR 
+        base_directory = f'{BASE_DIR}/sarek'
+        base_directory_eager = f'{BASE_DIR}/eager'
         workflow_tasks = []
         file_order = self.get_file_order(base_directory)
+        file_order_eager = self.get_file_order(base_directory_eager)
         if file_order != None:
-            workflow_tasks = file_order
+            workflow_tasks_sarek = file_order
+            workflow_tasks_eager = file_order_eager
+            workflow_tasks = workflow_tasks_sarek + workflow_tasks_eager
+            
         else:
             workflow_tasks = [os.path.join(base_directory, item) for item in os.listdir(base_directory) if os.path.isdir(os.path.join(base_directory, item))]
             workflow_tasks = [task for task in workflow_tasks if len(os.listdir(task)) > 40]
             workflow_tasks = list(map(os.path.basename, workflow_tasks))
-
-        base_directoryEager = f'{BASE_DIR}/eager'
-        workflow_tasks_eager = []
-        file_order = self.get_file_order(base_directoryEager)
-        if file_order != None:
-            workflow_tasks_eager = file_order
-        else:
-            workflow_tasks_eager = [os.path.join(base_directoryEager, item) for item in os.listdir(base_directoryEager) if os.path.isdir(os.path.join(base_directoryEager, item))]
-            workflow_tasks_eager = [task for task in workflow_tasks_eager if len(os.listdir(task)) > 40]
-            workflow_tasks_eager = list(map(os.path.basename, workflow_tasks_eager))
-
-        
             
         categories = ["selecktive k","Wastage", "Retries", "Runtime"]
         percentages = ["25%", "50%", "75%"]
@@ -192,7 +176,11 @@ class Experiment_Manager:
         # 0 = WASTE, 1 = RETRIES, 2 = RUNTIME
         
         for task in workflow_tasks:
-            r = self.benchmark_task(task, base_directory)
+            if task in file_order:
+                r = self.benchmark_task(task, base_directory)
+            else:
+                r = self.benchmark_task(task, base_directory_eager)
+            
             if r == -1:
                 continue
             k_selected.append(r[0])
@@ -205,25 +193,10 @@ class Experiment_Manager:
             for i, category in enumerate(categories): 
                 for j, percentage in enumerate(percentages): 
                     print(f'{category} {percentage}: {r[i][j]}')
-        """
-        for task in workflow_tasks_eager:
-            r = self.benchmark_task(task, base_directoryEager)
-            if r == -1:
-                continue
-            k_selected.append(r[0])
-            storageWaste.append(r[1])
-            retries.append(r[2])
-            runtime.append(r[3])
-            task_name = os.path.basename(task)
-            m = ', '.join(map(str, r[0][2]))
-            print(f'{task_name}')
-            for i, category in enumerate(categories): 
-                for j, percentage in enumerate(percentages): 
-                    print(f'{category} {percentage}: {r[i][j]}')
-        """
+      
                
         
-        models = [self._fileNames[self._currentRun] + "_selective", self._fileNames[self._currentRun] + "_partial", "KSegmentsModel_selective", "KSegmentsModel_partial"]  
+        models = ["KSegmentsModel_selective", "KSegmentsModel_partial"]  
         dictObject = {
             "models": models,
             "k_selected": k_selected,
@@ -231,20 +204,20 @@ class Experiment_Manager:
             "retries": retries,
             "runtime": runtime,
         }
-        if os.path.exists("pickleFiles\\"+ WRITE_DIR +"\\"+self._fileNames[self._currentRun] + ".pickle"):
-            os.remove("pickleFiles\\"+ WRITE_DIR +"\\"+self._fileNames[self._currentRun] + ".pickle")
-        with open( "pickleFiles\\"+ WRITE_DIR +"\\"+self._fileNames[self._currentRun] + ".pickle", "wb") as file:
+        if os.path.exists("pickleFiles\\"+ WRITE_DIR +"\\ks_"+ str(self._currentRun) + ".pickle"):
+            os.remove("pickleFiles\\"+ WRITE_DIR +"\\ks_"+ str(self._currentRun) + ".pickle")
+        with open( "pickleFiles\\"+ WRITE_DIR +"\\ks_"+ str(self._currentRun)+ ".pickle", "wb") as file:
             pickle.dump(dictObject, file, protocol=pickle.HIGHEST_PROTOCOL)
             
             
     def runAllExperiments(self):
         counter = 0
         for i in range(self._maxRuns):
-            self._currentRun = i
+            self._currentRun = i+2
             
-            print(self._fileNames[i]) 
+            
             self.runOneExperiment()
-            self._currentModel = self._currentModel + 2
+            
             
             
             
@@ -253,62 +226,7 @@ if __name__ == "__main__":
     monotonically_increasing = True
     k = 4
     
-    models = []
-    fileNames = []
     
     
-    # PeakMemory_k_segments 
-    models.append(PeakMemory_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    models.append(PeakMemory_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    fileNames.append("PeakMemory_k")
-    
-    # FileEvents_k_segments
-    models.append(FileEvents_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    models.append(FileEvents_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    fileNames.append("FileEvents_k")
-    
-    
-    #AverageMemory_k_segments
-    models.append(AverageMemory_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    models.append(AverageMemory_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    fileNames.append("AverageMemory_k")
-
-    
-    #MemoryLookUpTable_k_segments
-    models.append(MemoryLookUpTable_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    models.append(MemoryLookUpTable_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    fileNames.append("MemoryLookUpTable_k")
-
-
-
-
-    
-    #MemoryAndSegmentLengthCombind_k_segments
-    models.append(MemoryAndSegmentLengthCombind_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    models.append(MemoryAndSegmentLengthCombind_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    fileNames.append("M_and_SL_Combind_k")
-    
-    #SegmentLength_k_segments
-    models.append(SegmentLength_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    models.append(SegmentLength_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    fileNames.append("SegmentLength_k")
-    
-    #LookUpTable_k_segments
-    models.append(LookUpTable_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    models.append(LookUpTable_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    fileNames.append("LookUpTable_k")
-    
-    
-    #FileSize_k_segments
-    models.append(FileSize_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    models.append(FileSize_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    fileNames.append("FileSize_k")
-    
-    #ActiveFeedbackModel_k_segments
-    models.append(ActiveFeedbackModel_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    models.append(ActiveFeedbackModel_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    fileNames.append("ActiveFeedbackModel_k")
-    
-    
-    experiment_Manager = Experiment_Manager(models, fileNames)
+    experiment_Manager = ExperimentManagerDifferentKsOnBoth()
     experiment_Manager.runAllExperiments()

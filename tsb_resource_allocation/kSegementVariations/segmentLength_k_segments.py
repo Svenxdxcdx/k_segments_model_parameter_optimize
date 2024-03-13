@@ -28,7 +28,7 @@ class SegmentLength_k_segments(KSegmentsModel):
         memoryList = list(map(lambda d: (d[0]['_value']), self.files))
         memoryList.sort(key=len)
         smallestMemoryLog = memoryList[0]
-        segmentLength = int(len(smallestMemoryLog) / BASE_MODLE_TRAININGS_K)
+        segmentLength = self.findChangePoints(smallestMemoryLog)
         numberOfAllSegments = 0
         for memoryLog in memoryList:
             numberOfSegments = int(len(memoryLog) / segmentLength)
@@ -39,6 +39,24 @@ class SegmentLength_k_segments(KSegmentsModel):
         pass
     
     
+    def findChangePoints(self, memoryArray):
+        avaerage = np.average(memoryArray)
+        k = 0
+        currentLow = True
+        currentHigh = True
+        for memoryLogSample in memoryArray:
+            if memoryLogSample <= avaerage and currentHigh:
+                k += 1
+                currentLow = True
+                currentHigh = False
+            if memoryLogSample > avaerage and currentLow:
+                k += 1
+                currentHigh = True
+                currentLow = False
+        
+        return k
+                    
+
     
     def valid_k(self):
         for y,_,x in self.files:

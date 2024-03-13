@@ -6,7 +6,7 @@ import os
 import datetime
 
 
-class MemoryLookUpTable_k_segments(KSegmentsModel):
+class MostFrequentK_MCP_k_segmetns(KSegmentsModel):
     
     def __init__(
         self,
@@ -31,6 +31,8 @@ class MemoryLookUpTable_k_segments(KSegmentsModel):
         k_list = []
         numberOf_k_list = []
         
+        
+        
         for memoryArray in memoryValueTrainigsFile:
             
             trainingsFile_k = self.findChangePoints(memoryArray)
@@ -39,6 +41,8 @@ class MemoryLookUpTable_k_segments(KSegmentsModel):
                 numberOf_k_list[index] += 1
                 
             else:
+                
+                
                 k_list.append(trainingsFile_k)
                 numberOf_k_list.append(1)
                 

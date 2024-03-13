@@ -29,10 +29,43 @@ class FileEvents_k_segments(KSegmentsModel):
         if not valid_dataset:
             
             self.k = 4
+            
             return 
         self.k = self.fileAvarageLength()
         return
 
+    def memoryChangePoints(self):
+        memoryValueTrainigsFile = []
+        memoryValueTrainigsFile = list(map(lambda d: (d[0]['_value']), self.files))
+            
+        sumUpK = 0
+        
+        for memoryArray in memoryValueTrainigsFile:
+            
+            sumUpK = sumUpK +  self.findChangePoints(memoryArray)
+        
+        self.k = int(sumUpK / len(memoryValueTrainigsFile))
+        
+        self.valid_k(memoryValueTrainigsFile)
+        pass
+    
+    def findChangePoints(self, memoryArray):
+        avaerage = np.average(memoryArray)
+        k = 0
+        currentLow = True
+        currentHigh = True
+        for memoryLogSample in memoryArray:
+            if memoryLogSample <= avaerage and currentHigh:
+                k += 1
+                currentLow = True
+                currentHigh = False
+            if memoryLogSample > avaerage and currentLow:
+                k += 1
+                currentHigh = True
+                currentLow = False
+        if (k == 0):
+            pass
+        return k
 
     def fileAvarageLength(self):
         data = list(map(lambda d: (len(d[1])), self.files))
@@ -72,3 +105,12 @@ class FileEvents_k_segments(KSegmentsModel):
         if timestamp.endswith('.Z'):
             timestamp = timestamp[:-2]+'Z'
         return datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
+    
+        
+    def valid_k(self, memoryValueTrainigsFile):
+        
+        for memory in memoryValueTrainigsFile:
+            if len(memory) < self.k:
+                self.k = len(memory)
+            if self.k == 0:
+                pass

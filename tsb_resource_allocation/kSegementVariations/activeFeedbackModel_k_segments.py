@@ -40,7 +40,7 @@ class ActiveFeedbackModel_k_segments(KSegmentsModel):
         
         memoryValueTrainigsFile.sort(key=len)
         smallestMemoryLog = memoryValueTrainigsFile[0]
-        segmentLength = int(len(smallestMemoryLog) / BASE_MODLE_TRAININGS_K)
+        segmentLength = self.findChangePoints(smallestMemoryLog)
         self._baseSegmenthLength = segmentLength
         
         sumUpK = 0
@@ -101,17 +101,17 @@ class ActiveFeedbackModel_k_segments(KSegmentsModel):
             else:
                 sumUpK += segment_k
                 
-        if self.k != int(sumUpK / len(memoryValueTrainigsFile)):
-            print("New k: " + str(int(sumUpK / len(memoryValueTrainigsFile))))
+        #if self.k != int(sumUpK / len(memoryValueTrainigsFile)):
+        #    print("New k: " + str(int(sumUpK / len(memoryValueTrainigsFile))))
         self.k = int(sumUpK / len(memoryValueTrainigsFile))
         
         self.valid_k()
         
     
     
-    def evaluteData(self, data):
+    def evaluteData(self, data, currentFile):
         data_k = self.calculateData_k(data)
-        self.mangeDataArray(data)
+        self.mangeDataArray(data, currentFile)
         if data_k != self.k:
             
             self._recaluculateCounter += 1
@@ -131,7 +131,10 @@ class ActiveFeedbackModel_k_segments(KSegmentsModel):
         else:
             return segment_k
         
-    def mangeDataArray(self, data):
+    def mangeDataArray(self, data, currentFile):
         self._memoryDataPoints.pop(0)
         self._memoryDataPoints.append(data)
+        self.files.pop(0)
+        self.files.append(currentFile)
+        self.train_model()
         

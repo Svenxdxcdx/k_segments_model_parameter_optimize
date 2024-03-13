@@ -29,7 +29,7 @@ class MemoryAndSegmentLengthCombind_k_segments(KSegmentsModel):
         
         memoryValueTrainigsFile.sort(key=len)
         smallestMemoryLog = memoryValueTrainigsFile[0]
-        segmentLength = int(len(smallestMemoryLog) / BASE_MODLE_TRAININGS_K)
+        segmentLength = self.findChangePoints(smallestMemoryLog)
         sumUpK = 0
         
         for memoryArray in memoryValueTrainigsFile:

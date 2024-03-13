@@ -23,7 +23,7 @@ from tsb_resource_allocation.file_events_model import FileEventsModel
 from tsb_resource_allocation.default_model import DefaultModel
 
 #from tsb_resource_allocation.kSegementVariations.LookUpTable_k_segments import LookUpTable_k_segments
-from tsb_resource_allocation.kSegementVariations.averageMemory_k_segments import AverageMemory_k_segments
+from tsb_resource_allocation.kSegementVariations.memoryChangePoints_k_segments import AverageMemory_k_segments
 
 sns.set_theme(style="darkgrid")
 

@@ -63,7 +63,7 @@ class Simulation:
             pts = self.task_model.predict(input_total_size)
             clusters = self.get_clusters(pts)
             if self.task_model.mode == "activeFeedbackModel":
-                self.task_model.evaluteData(data)
+                self.task_model.evaluteData(data, [memory, file_events, input_total_size])
         else:
             if isinstance(self.task_model, DefaultModel):
                 prediction = default_value

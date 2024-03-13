@@ -33,6 +33,18 @@ def plotWastageBarsDynamic(results, models):
     for container in ax.containers:
         ax.bar_label(container)
 
+# TODO
+def safePlotWastageBarsDynamic(results, models):
+    twentyFiveAverage, fifthyAverage, seventyFiveAverage = calculateAverageWaste(results)
+    
+    
+    df = pd.DataFrame({"25%": twentyFiveAverage,
+                       "50%": fifthyAverage,
+                       "75%": seventyFiveAverage}, index=models)
+    ax = df.plot.bar(rot=0, color={"25%": "blue", "50%": "orange",  "75%": "green"})
+    for container in ax.containers:
+        ax.bar_label(container)
+
 def plotSelectedK_BarsDynamic(results, models):
     twentyFiveAverage, fifthyAverage, seventyFiveAverage = calculateAverageWaste(results)
     
@@ -41,9 +53,51 @@ def plotSelectedK_BarsDynamic(results, models):
                        "50%": fifthyAverage,
                        "75%": seventyFiveAverage}, index=models)
     ax = df.plot.bar(rot=0, color={"25%": "blue", "50%": "orange",  "75%": "green"})
-    
+    for container in ax.containers:
+        ax.bar_label(container)
 
-    pass
+
+def plotRuntimeBarsDynamic(results, models):
+    twentyFiveAverage, fifthyAverage, seventyFiveAverage = calculateAverageWaste(results)
+    
+    
+    df = pd.DataFrame({"25%": twentyFiveAverage,
+                       "50%": fifthyAverage,
+                       "75%": seventyFiveAverage}, index=models)
+    ax = df.plot.bar(rot=0, color={"25%": "blue", "50%": "orange",  "75%": "green"})
+    for container in ax.containers:
+        ax.bar_label(container)
+
+
+
+
+def plotRetriesBarsDynamic(results, models):
+    twentyFiveAverage, fifthyAverage, seventyFiveAverage = calculateAverageWaste(results)
+    
+    
+    df = pd.DataFrame({"25%": twentyFiveAverage,
+                       "50%": fifthyAverage,
+                       "75%": seventyFiveAverage}, index=models)
+    ax = df.plot.bar(rot=0, color={"25%": "blue", "50%": "orange",  "75%": "green"})
+    for container in ax.containers:
+        ax.bar_label(container)
+
+# @Param filePath has the name of the plot input
+def safePlotsBarsDynamic(results, models, filePath):
+    twentyFiveAverage, fifthyAverage, seventyFiveAverage = calculateAverageWaste(results)
+    
+    
+    df = pd.DataFrame({"25%": twentyFiveAverage,
+                       "50%": fifthyAverage,
+                       "75%": seventyFiveAverage}, index=models)
+    ax = df.plot.bar(rot=0, color={"25%": "blue", "50%": "orange",  "75%": "green"})
+    for container in ax.containers:
+        ax.bar_label(container)
+    plt.gcf().set_size_inches(15, 5)
+    plt.savefig(filePath + '.png', dpi=100)
+    plt.close()
+
+
 
 def calculateAverageWaste(results):
     twentyFive = []
