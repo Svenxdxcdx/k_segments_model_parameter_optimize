@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os 
 import datetime
-
+from collections import Counter
 
 BASE_MODLE_TRAININGS_K = 4
 
@@ -34,32 +34,49 @@ class ActiveFeedbackModel_k_segments(KSegmentsModel):
         self._baseSegmenthLength = 0
         
     def calculate_k(self):
-        memoryValueTrainigsFile = list(map(lambda d: (d[0]['_value']), self.files))
-        self._memoryDataPoints = list(map(lambda d: (d[0]['_value']), self.files))
-        self._recaluculateMaxCounter = int(len(self._memoryDataPoints)* PERCENT_OF_RECALCULTE)
+        memoryList = list(map(lambda d: (d[0]['_value']), self.files))
+        self._memoryDataPoints = memoryList
+        self.k = self.buildLookUpTable(memoryList)
+        if self.k == 0:
+            self.k = 1
+        self.valid_k()
+        pass
+    
+    
+    
         
-        memoryValueTrainigsFile.sort(key=len)
-        smallestMemoryLog = memoryValueTrainigsFile[0]
-        segmentLength = self.findChangePoints(smallestMemoryLog)
-        self._baseSegmenthLength = segmentLength
+    # Numeric misstake get covered
+    def buildLookUpTable(self, memoryList):
+        memoryList.sort(key=len)
+        smallestSize = len(memoryList[0])
         
+        max_k = smallestSize
+        
+        biggestSize = len(memoryList[len(memoryList)-1])
+        sizeDifference = biggestSize - smallestSize
+        
+        mostFrequntFileLen = self.calaclulateMostFrequentFileSize(memoryList)
+        
+        traingisSet = []
+        for memory in memoryList:
+            if len(memory) == mostFrequntFileLen:
+                traingisSet.append(memory)
+            if len(memory) > mostFrequntFileLen:
+                break
+        
+        return self.memoryChangePoints(traingisSet)
+        
+    def memoryChangePoints(self, memoryValueTrainigsFile):
+            
         sumUpK = 0
         
         for memoryArray in memoryValueTrainigsFile:
             
-            changePoint_k = self.findChangePoints(memoryArray)
-            segment_k = int(len(memoryArray) / segmentLength)
-            if changePoint_k > segment_k:
-                sumUpK += changePoint_k
-            else:
-                sumUpK += segment_k
-                
-                
-        self.k = int(sumUpK / len(memoryValueTrainigsFile))
+            sumUpK = sumUpK +  self.findChangePoints(memoryArray)
         
-        self.valid_k()
-    
-    
+        return int(sumUpK / len(memoryValueTrainigsFile))
+        
+        
     def findChangePoints(self, memoryArray):
         avaerage = np.average(memoryArray)
         k = 0
@@ -74,13 +91,17 @@ class ActiveFeedbackModel_k_segments(KSegmentsModel):
                 k += 1
                 currentHigh = True
                 currentLow = False
+        if (k == 0):
+            pass
         return k
+                
+    def calaclulateMostFrequentFileSize(self, memoryList):
     
-    
-    def valid_k(self):
-        for y,_,x in self.files:
-            if len(y) < self.k:
-                self.k = len(y)
+        memoryListLen = list(map(lambda d: len(d), memoryList))
+        
+        most_common_numbers = Counter(memoryListLen).most_common(1)
+        return most_common_numbers[0][0]
+        
     
     
     def recalculate(self):
@@ -88,7 +109,7 @@ class ActiveFeedbackModel_k_segments(KSegmentsModel):
         memoryValueTrainigsFile.sort(key=len)
         smallestMemoryLog = memoryValueTrainigsFile[0]
         segmentLength = int(len(smallestMemoryLog) / BASE_MODLE_TRAININGS_K)
-        self._baseSegmenthLength = segmentLength
+       
         
         sumUpK = 0
         
@@ -124,12 +145,8 @@ class ActiveFeedbackModel_k_segments(KSegmentsModel):
         
     
     def calculateData_k(self, data):
-        changePoint_k = self.findChangePoints(data)
-        segment_k = int(len(data) / self._baseSegmenthLength)
-        if changePoint_k > segment_k:
-            return changePoint_k
-        else:
-            return segment_k
+        return self.findChangePoints(data)
+        
         
     def mangeDataArray(self, data, currentFile):
         self._memoryDataPoints.pop(0)
@@ -137,4 +154,9 @@ class ActiveFeedbackModel_k_segments(KSegmentsModel):
         self.files.pop(0)
         self.files.append(currentFile)
         self.train_model()
-        
+
+    
+    def valid_k(self):
+        for y,_,x in self.files:
+            if len(y) < self.k:
+                self.k = len(y)

@@ -30,7 +30,11 @@ from plots.plotsBars import plotRetriesBarsDynamic
 
 #CURRENT_DIR = "eager"
 #CURRENT_DIR = "sarek"
-CURRENT_DIR = "both"
+#CURRENT_DIR = "both"
+#CURRENT_DIR = "bothDifferentKs"
+#CURRENT_DIR = "eagerKs"
+CURRENT_DIR = "sarekKs"
+
 SAFE_FOLDER = "plotsPng\\" + CURRENT_DIR + "\\"
 
 def readPickleFile():
