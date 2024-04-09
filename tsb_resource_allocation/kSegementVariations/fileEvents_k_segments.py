@@ -32,23 +32,10 @@ class FileEvents_k_segments(KSegmentsModel):
             
             return 
         self.k = self.fileAvarageLength()
+        self.valid_k()
         return
 
-    def memoryChangePoints(self):
-        memoryValueTrainigsFile = []
-        memoryValueTrainigsFile = list(map(lambda d: (d[0]['_value']), self.files))
-            
-        sumUpK = 0
-        
-        for memoryArray in memoryValueTrainigsFile:
-            
-            sumUpK = sumUpK +  self.findChangePoints(memoryArray)
-        
-        self.k = int(sumUpK / len(memoryValueTrainigsFile))
-        
-        self.valid_k(memoryValueTrainigsFile)
-        pass
-    
+
     def findChangePoints(self, memoryArray):
         avaerage = np.average(memoryArray)
         k = 0
@@ -74,7 +61,10 @@ class FileEvents_k_segments(KSegmentsModel):
         
         for numberOfFileEvents in data:
             numberOfAllFileEvents = numberOfAllFileEvents + numberOfFileEvents 
-        return int(numberOfAllFileEvents / numberOfFiles)
+        selected_k = int(numberOfAllFileEvents / numberOfFiles)
+        if selected_k == 0:
+            return 1
+        return selected_k
         
     
     
@@ -107,10 +97,7 @@ class FileEvents_k_segments(KSegmentsModel):
         return datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
     
         
-    def valid_k(self, memoryValueTrainigsFile):
-        
-        for memory in memoryValueTrainigsFile:
-            if len(memory) < self.k:
-                self.k = len(memory)
-            if self.k == 0:
-                pass
+    def valid_k(self):
+        for y,_,x in self.files:
+            if len(y) < self.k:
+                self.k = len(y)

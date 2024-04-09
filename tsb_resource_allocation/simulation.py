@@ -40,6 +40,8 @@ class Simulation:
         if isinstance(self.task_model, KSegmentsModel) and self.task_model.mode != "normal":
             #if mod
             pass
+        if self.task_model.mode == "peakMemory":
+            self.task_model.dir = file_names
         self.error = self.task_model.train_model()
         
     def get_file_names(self):

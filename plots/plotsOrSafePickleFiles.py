@@ -33,8 +33,9 @@ from plots.plotsBars import plotRetriesBarsDynamic
 #CURRENT_DIR = "both"
 #CURRENT_DIR = "bothDifferentKs"
 #CURRENT_DIR = "eagerKs"
-CURRENT_DIR = "sarekKs"
-
+#CURRENT_DIR = "sarekKs"
+#CURRENT_DIR = "rangeland"
+CURRENT_DIR = "third"
 SAFE_FOLDER = "plotsPng\\" + CURRENT_DIR + "\\"
 
 def readPickleFile():
@@ -148,6 +149,52 @@ def readAndSafeAllPlotFileNames():
         #plotRetriesBarsDynamic(retries, name)
         pass
     
+    
+def readAndSafeAllPlotFileNamesAdaptForError():
+    fileNames = os.listdir("C:\\privat\\Bachelor_Work\\pytonProject\\k_segments_model_parameter_optimize\\pickleFiles\\" + CURRENT_DIR)
+    
+    dirPath = "pickleFiles\\" + CURRENT_DIR + "\\"
+    fileType = ".pickle"
+
+    
+    wasteList = []
+    k_list = []
+    runtime_list = []
+    retries_list = []
+    nameList = []
+    for fileName in fileNames:
+        if "KSegmentsModel" not in fileName:
+            expDict = readDictPickleFile(dirPath + fileName)
+            
+            wasteList.append(expDict["storageWaste"])
+            
+            
+            k_list.append(expDict["k_selected"])
+            runtime_list.append(expDict["runtime"])
+            retries_list.append(expDict["retries"])
+            
+            nameList.append(expDict["models"])
+        
+    cutFileNames = list(map(lambda x: (x.split(".")[0]), fileNames))
+    
+            
+    for waste, k, name, fileName in zip(wasteList, k_list, nameList, cutFileNames):
+        
+        safePlotsBarsDynamic(waste, name, SAFE_FOLDER + fileName + "_storage_waste")
+        safePlotsBarsDynamic(k, name, SAFE_FOLDER + fileName + "k_Bars")
+        #plotWastageBarsDynamic(waste, name)
+        #plotSelectedK_BarsDynamic(k, name)
+        pass
+        
+    for runtime, retries, name, fileName in zip(runtime_list, retries_list, nameList, cutFileNames):
+        #safePlotRuntimeBarsDynamic(runtime, name, SAFE_FOLDER + fileName)
+        safePlotsBarsDynamic(runtime, name, SAFE_FOLDER + fileName + "runtime")
+        safePlotsBarsDynamic(retries, name, SAFE_FOLDER + fileName + "retries")
+        #plotRuntimeBarsDynamic(runtime, name)
+        #plotRetriesBarsDynamic(retries, name)
+        pass
+    
+
 def plotOneFile():
     fileNames = ["AverageMemory_k.pickle"]
     
@@ -199,6 +246,7 @@ if __name__ == "__main__":
     #plotSelectedK_handler()
     #readAllFIleNames()
     readAndSafeAllPlotFileNames()
+    #readAndSafeAllPlotFileNamesAdaptForError()
     #plotOneFile()
     #plt.show()
 

@@ -34,48 +34,8 @@ def run_simulation(directory, training, test, monotonically_increasing = True, k
     # PeakMemory_k_segments 
     task_model = PeakMemory_k_segments(k = k, monotonically_increasing = monotonically_increasing)
     simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
-    #simulations.append(simulation)
-    
-    
-    # FileEvents_k_segments
-    task_model = FileEvents_k_segments(k = k, monotonically_increasing = monotonically_increasing)
-    simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
-    #simulations.append(simulation)
-    
-    # KSegments retry: selective
-    task_model = KSegmentsModel(k = k, monotonically_increasing = monotonically_increasing)
-    simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
     simulations.append(simulation)
     
-    # KSegments retry: selective - NO UNDERPREDICTION
-    task_model = KSegmentsModel(k = k, monotonically_increasing = monotonically_increasing, time_mode = -1)
-    simulation = Simulation(task_model, directory, retry_mode = 'selective', provided_file_names = training)
-    #simulations.append(simulation)
-    
-    # KSegments retry: partial
-    task_model = KSegmentsModel(k = k, monotonically_increasing = monotonically_increasing)
-    simulation = Simulation(task_model, directory, retry_mode = 'partial', provided_file_names = training)
-    simulations.append(simulation)
-    
-    # WITT LR MEAN+- TASK MODEL 
-    task_model = WittTaskModel(mode = "mean+-")
-    simulation = Simulation(task_model, directory, retry_mode = 'full', provided_file_names = training)
-    simulations.append(simulation)
-
-    # TOVAR TASK MODEL - full retry
-    task_model = TovarTaskModel()
-    simulation = Simulation(task_model, directory, retry_mode = 'full', provided_file_names = training)
-    simulations.append(simulation)
-    
-     # TOVAR TASK MODEL - tovar retry
-    task_model = TovarTaskModel()
-    simulation = Simulation(task_model, directory, retry_mode = 'tovar', provided_file_names = training)
-    simulations.append(simulation)
-    
-    # Default Model
-    task_model = DefaultModel()
-    simulation = Simulation(task_model, directory, retry_mode = 'full', provided_file_names = training)
-    simulations.append(simulation)
     
     selected_k ,waste, retries, runtimes = [0 for _ in range(len(simulations))],[0 for _ in range(len(simulations))],[0 for _ in range(len(simulations))],[0 for _ in range(len(simulations))]
     for file_name in test:

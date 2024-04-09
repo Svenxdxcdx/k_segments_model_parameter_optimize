@@ -1,3 +1,7 @@
+import numpy as np
+from sklearn.model_selection import train_test_split
+
+
 from tsb_resource_allocation.k_segments_model import KSegmentsModel
 
 import matplotlib.pyplot as plt
@@ -6,7 +10,7 @@ import os
 import datetime
 from scipy.signal import find_peaks, peak_prominences, peak_widths, chirp
 
-class PeakMemory_k_segments(KSegmentsModel):
+class SplitPythonData_k_segments(KSegmentsModel):
     def __init__(
             self,
             monotonically_increasing = True,
@@ -39,37 +43,8 @@ class PeakMemory_k_segments(KSegmentsModel):
         
         id = 0
         for memory in memoryList:
-            peaks, _ = find_peaks(memory)
-            prominences = peak_prominences(memory, peaks)[0]
-            contour_heights = memory[peaks] - prominences
-            results_full = peak_widths(memory, peaks, rel_height=0.5)
-            id += 1
-            numberOfPeaksOverAllFiles = numberOfPeaksOverAllFiles + len(peaks)
+            pass
             
-        memToPlot = memoryList[0]
-        peaks, _ = find_peaks(memToPlot)
-        prominences = peak_prominences(memToPlot, peaks)[0]
-        contour_heights = memToPlot[peaks] - prominences
-        results_full = peak_widths(memToPlot, peaks, rel_height=0.5)
-        
-        plt.figure()
-        plt.plot(np.array(memToPlot))
-        plt.plot(peaks, memToPlot[peaks], "x")
-        #plt.hlines(*results_full[1:], color="green")
-        
-        #
-        plt.vlines(x=peaks, ymin=contour_heights, ymax=memToPlot[peaks], color="red")
-        
-        plt.xlabel('storage with peaks') 
-        
-        
-        #plt.show()
-        filePath = "plotsPng\\peaksExamples\\"+ self.dir[0]
-        
-        if os.path.exists(filePath + ".png"):
-            os.remove(filePath + ".png")
-        plt.savefig(filePath + '.png', dpi=100)
-        plt.close()
         return int(numberOfPeaksOverAllFiles / numberOfFiles)
         
         
