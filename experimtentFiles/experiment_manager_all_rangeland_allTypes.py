@@ -35,6 +35,8 @@ from tsb_resource_allocation.kSegementVariations.activeFeedbackModel_k_segments 
 from tsb_resource_allocation.kSegementVariations.mostFrequentK_SL_k_segmetns import MostFrequentK_SL_k_segments
 from tsb_resource_allocation.kSegementVariations.sameFileSizeSL_k_segments import SameFileSizeSL_k_segments
 
+from tsb_resource_allocation.kSegementVariations.m_and_SL_mostFrequentK import M_and_SL_mostFrequentK
+from tsb_resource_allocation.kSegementVariations.m_and_SL_sameFileSize import M_and_SL_sameFileSize
 
 sns.set_theme(style="darkgrid")
 
@@ -482,6 +484,7 @@ if __name__ == "__main__":
     models = []
     fileNames = []
     
+    """
     # PeakMemory_k_segments 
     models.append(PeakMemory_k_segments(k = k, monotonically_increasing = monotonically_increasing))
     models.append(PeakMemory_k_segments(k = k, monotonically_increasing = monotonically_increasing))
@@ -536,6 +539,14 @@ if __name__ == "__main__":
     models.append(SameFileSizeSL_k_segments(k = k, monotonically_increasing = monotonically_increasing))
     fileNames.append("SameFileSizeSL_k_segments")
     
+    """
+    models.append(M_and_SL_mostFrequentK(k = k, monotonically_increasing = monotonically_increasing))
+    models.append(M_and_SL_mostFrequentK(k = k, monotonically_increasing = monotonically_increasing))
+    fileNames.append("M_and_SL_mostFrequentK")
+    
+    models.append(M_and_SL_sameFileSize(k = k, monotonically_increasing = monotonically_increasing))
+    models.append(M_and_SL_sameFileSize(k = k, monotonically_increasing = monotonically_increasing))
+    fileNames.append("M_and_SL_sameFileSize")
     
     
     
