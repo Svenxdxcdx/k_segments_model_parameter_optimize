@@ -126,3 +126,97 @@ def calculateAverageWaste(results):
     
     return twentyFiveAverage, fifthyAverage, seventyFiveAverage
     
+
+
+def plotBestApporachAndk_sFirstProcent(bestApproachDict, resultsList, modelsList):
+    resultsDictList = []
+    for results,model in zip(resultsList, modelsList):
+        # 0 selective
+        # 1 partial
+        twentyFiveAverage, fifthyAverage, seventyFiveAverage = calculateAverageWaste(results)
+        modelsDict = {
+            "25s": twentyFiveAverage[0],
+            "50s": fifthyAverage[0],
+            "75s": seventyFiveAverage[0],
+            "25p": twentyFiveAverage[1],
+            "50p": fifthyAverage[1],
+            "75p": seventyFiveAverage[1],
+            "name": model
+        }
+        resultsDictList.append(modelsDict)
+    bestTwenty, bestFifthy, bestSeventy = calculateAverageWaste(bestApproachDict["storageWaste"])
+    bestModelsDict = {
+            "25s": bestTwenty[0],
+            "50s": bestFifthy[0],
+            "75s": bestSeventy[0],
+            "25p": bestTwenty[1],
+            "50p": bestFifthy[1],
+            "75p": bestSeventy[1],
+            "name": "Appraoch"
+        }
+    resultsDictList.append(bestModelsDict)
+    
+    sorted25s = sorted(resultsDictList, key=lambda x: x["25s"])
+    plotDictselective(sorted25s, "25% StorageWaste Selective", "25")
+    
+    sorted50s = sorted(resultsDictList, key=lambda x: x["50s"])
+    plotDictselective(sorted50s, "50% StorageWaste Selective", "50")
+    
+    sorted75s = sorted(resultsDictList, key=lambda x: x["75s"])
+    plotDictselective(sorted75s, "75% StorageWaste Selective", "75")
+    
+    
+    
+    sorted25p = sorted(resultsDictList, key=lambda x: x["25p"])
+    plotDictpartiell(sorted25p, "25% StorageWaste Partial", "25")
+    
+    sorted50p = sorted(resultsDictList, key=lambda x: x["50p"])
+    plotDictpartiell(sorted50p, "50% StorageWaste Partial", "50")
+    
+    sorted75p = sorted(resultsDictList, key=lambda x: x["75p"])
+    plotDictpartiell(sorted75p, "75% StorageWaste Partial", "75")
+    
+    
+    
+    
+#    
+def plotDictselective(resultsDictList, title, proecent):
+    models = list(map(lambda x: (x["name"]), resultsDictList))
+    results = list(map(lambda x: (x[proecent + "s"]), resultsDictList))
+    df = pd.DataFrame({proecent + "%": results}, index=models)
+    #ax = df.plot.bar(rot=0, color={"25%": "blue", "50%": "orange",  "75%": "green"})
+    if proecent == "25":
+        ax = df.plot.bar(rot=0, color={"25%": "blue"})
+    if proecent == "50":
+        ax = df.plot.bar(rot=0, color={"50%": "orange"})
+    if proecent == "75":
+        ax = df.plot.bar(rot=0, color={"75%": "green"})
+    for container in ax.containers:
+        ax.bar_label(container)
+    ax.set_title(title)
+    plt.gcf().set_size_inches(15, 5)
+    #plt.show()
+    pathPng = "plotsPng\\sortedPlots\\" + proecent +"s.png"
+    plt.savefig(pathPng, dpi=100)
+    plt.close()
+
+def plotDictpartiell(resultsDictList, title, proecent):
+    models = list(map(lambda x: (x["name"]), resultsDictList))
+    results = list(map(lambda x: (x[proecent + "p"]), resultsDictList))
+    df = pd.DataFrame({proecent + "%": results}, index=models)
+    #ax = df.plot.bar(rot=0, color={"25%": "blue", "50%": "orange",  "75%": "green"})
+    if proecent == "25":
+        ax = df.plot.bar(rot=0, color={"25%": "blue"})
+    if proecent == "50":
+        ax = df.plot.bar(rot=0, color={"50%": "orange"})
+    if proecent == "75":
+        ax = df.plot.bar(rot=0, color={"75%": "green"})
+    for container in ax.containers:
+        ax.bar_label(container)
+    ax.set_title(title)
+    plt.gcf().set_size_inches(15, 5)
+    #plt.show()
+    pathPng = "plotsPng\\sortedPlots\\" + proecent +"p.png"
+    plt.savefig(pathPng, dpi=100)
+    plt.close()
+    

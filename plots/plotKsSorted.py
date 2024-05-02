@@ -28,6 +28,8 @@ from plots.plotsBars import plotRuntimeBarsDynamic
 from plots.plotsBars import safePlotsBarsDynamic
 from plots.plotsBars import plotRetriesBarsDynamic
 
+
+from plots.plotsBars import plotBestApporachAndk_sFirstProcent
 #CURRENT_DIR = "eager"
 #CURRENT_DIR = "sarek"
 #CURRENT_DIR = "both"
@@ -240,16 +242,48 @@ def plotOneFile():
         pass
     pass
 
+def plotKsSortedAndBestApproach():
+    fileNames = os.listdir("C:\\privat\\Bachelor_Work\\pytonProject\\k_segments_model_parameter_optimize\\pickleFiles\\" + "thirdDifferentKs")
+    bestAppraochPath = "C:\\privat\\Bachelor_Work\\pytonProject\\k_segments_model_parameter_optimize\\pickleFiles\\third\\SameFileSizeMCP_k.pickle"
+    dirPath = "pickleFiles\\" + "thirdDifferentKs" + "\\"
+    fileType = ".pickle"
+
+    
+    wasteList = []
+    k_list = []
+    runtime_list = []
+    retries_list = []
+    nameList = []
+    for fileName in fileNames:
+        if "KSegmentsModel" not in fileName:
+            expDict = readDictPickleFile(dirPath + fileName)
+            
+            wasteList.append(expDict["storageWaste"])
+            
+            
+            k_list.append(expDict["k_selected"])
+            runtime_list.append(expDict["runtime"])
+            retries_list.append(expDict["retries"])
+            
+            nameList.append(str(expDict["k_selected"][0][0][0]))
+        
+    
+    bestAppraochDict = readDictPickleFile(bestAppraochPath)
+    cutFileNames = list(map(lambda x: (x.split(".")[0]), fileNames))
+    plotBestApporachAndk_sFirstProcent(bestAppraochDict, wasteList, nameList)
+
+    pass
 if __name__ == "__main__":
     #results = readPickleFile()
     #plotWastageBars(results)
     #plotAllModelsWasteHandler()
     #plotSelectedK_handler()
     #readAllFIleNames()
-    readAndSafeAllPlotFileNames()
+    #readAndSafeAllPlotFileNames()
     #readAndSafeAllPlotFileNamesAdaptForError()
     #plotOneFile()
     #plt.show()
+    plotKsSortedAndBestApproach()
 
 
 

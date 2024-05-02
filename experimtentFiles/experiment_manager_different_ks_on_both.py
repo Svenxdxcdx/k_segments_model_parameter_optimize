@@ -2,7 +2,7 @@ BASE_DIR = 'C:\\privat\\Bachelor_Work\\pytonProject\\update-traces\\k-Segments-t
 
 #WRITE_DIR = "eager"
 #WRITE_DIR = "sarek"
-WRITE_DIR = "bothDifferentKs"
+WRITE_DIR = "thirdDifferentKs"
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -209,6 +209,74 @@ class ExperimentManagerDifferentKsOnBoth:
         with open( "pickleFiles\\"+ WRITE_DIR +"\\ks_"+ str(self._currentRun)+ ".pickle", "wb") as file:
             pickle.dump(dictObject, file, protocol=pickle.HIGHEST_PROTOCOL)
             
+    
+    def runOneExperimentThird(self):
+        self.write_dir = "third"
+        base_directory = f'{BASE_DIR}/sarek'
+        base_directory_eager = f'{BASE_DIR}/eager'
+        base_directory_rangeland = f'{BASE_DIR}/rangeland'
+        
+        workflow_tasks = []
+        file_order = self.get_file_order(base_directory)
+        file_order_eager = self.get_file_order(base_directory_eager)
+        file_order_rangeland = self.get_file_order(base_directory_rangeland)
+        
+        if file_order != None:
+            workflow_tasks_sarek = file_order
+            workflow_tasks_eager = file_order_eager
+            workflow_tasks_rangeland = file_order_rangeland
+            workflow_tasks = workflow_tasks_sarek + workflow_tasks_eager +workflow_tasks_rangeland
+            
+        else:
+            workflow_tasks = [os.path.join(base_directory, item) for item in os.listdir(base_directory) if os.path.isdir(os.path.join(base_directory, item))]
+            workflow_tasks = [task for task in workflow_tasks if len(os.listdir(task)) > 40]
+            workflow_tasks = list(map(os.path.basename, workflow_tasks))
+            
+        categories = ["selecktive k","Wastage", "Retries", "Runtime"]
+        percentages = ["25%", "50%", "75%"]
+
+
+        k_selected = []
+        storageWaste = []
+        retries = []
+        runtime = []
+        # 0 = WASTE, 1 = RETRIES, 2 = RUNTIME
+        
+        for task in workflow_tasks:
+            if task in file_order:
+                r = self.benchmark_task(task, base_directory)
+            elif task in file_order_eager:
+                r = self.benchmark_task(task, base_directory_eager)
+            elif task in file_order_rangeland:
+                r = self.benchmark_task(task, base_directory_rangeland)
+            
+            if r == -1:
+                continue
+            k_selected.append(r[0])
+            storageWaste.append(r[1])
+            retries.append(r[2])
+            runtime.append(r[3])
+            task_name = os.path.basename(task)
+            m = ', '.join(map(str, r[0][2]))
+            print(f'{task_name}')
+            for i, category in enumerate(categories): 
+                for j, percentage in enumerate(percentages): 
+                    print(f'{category} {percentage}: {r[i][j]}')
+      
+               
+        
+        models = ["KSegmentsModel_selective", "KSegmentsModel_partial"]  
+        dictObject = {
+            "models": models,
+            "k_selected": k_selected,
+            "storageWaste": storageWaste,
+            "retries": retries,
+            "runtime": runtime,
+        }
+        if os.path.exists("pickleFiles\\"+ WRITE_DIR +"\\ks_"+ str(self._currentRun) + ".pickle"):
+            os.remove("pickleFiles\\"+ WRITE_DIR +"\\ks_"+ str(self._currentRun) + ".pickle")
+        with open( "pickleFiles\\"+ WRITE_DIR +"\\ks_"+ str(self._currentRun)+ ".pickle", "wb") as file:
+            pickle.dump(dictObject, file, protocol=pickle.HIGHEST_PROTOCOL)
             
     def runAllExperiments(self):
         counter = 0
@@ -216,8 +284,8 @@ class ExperimentManagerDifferentKsOnBoth:
             self._currentRun = i+2
             
             
-            self.runOneExperiment()
-            
+            #self.runOneExperiment()
+            self.runOneExperimentThird()
             
             
             
