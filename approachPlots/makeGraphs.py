@@ -6,11 +6,13 @@ import pandas as pd
 import numpy as np
 import statistics
 
-DIR = "plotsPng\approachGraphs"
+DIR = "plotsPng\\approachGraphs"
 
 BASE_X = [0,1,2,3,4,5,6,7,8,9]
 
 BASE_Y = [0,1,3,2,1,2,3,4,2,0]
+
+
 
 def plotFirst():
     plt.plot(BASE_X,BASE_Y)
@@ -26,13 +28,13 @@ def plotMemoryChnagePoint():
     
     plt.xlabel("Time")
     plt.ylabel("Memory")
-    mean = np.median(BASE_Y)
+    mean = np.mean(BASE_Y)
     meanLine = np.zeros(10)
     for index in range(10):
         meanLine[index] = mean
     plt.plot(BASE_X,meanLine, color='green', label = "Change Line")
     plt.legend(loc='upper center')
-    plt.show()
+    plt.savefig(DIR+ '\\changePoint.png')
     
 def plotSegemtPartsLength():
     plt.plot(BASE_X,BASE_Y, color='blue', marker = 'o', label = "Memory Usage")
@@ -44,7 +46,7 @@ def plotSegemtPartsLength():
     
     plt.plot(segementParts_X,segementParts_Y, color='red', label = "One SegmentPart")
     plt.legend(loc='upper center')
-    plt.show()
+    plt.savefig(DIR+ '\\segments.png')
     
     
 def plotPeakMemory():
@@ -60,10 +62,28 @@ def plotPeakMemory():
     
     
     plt.legend(loc='upper center')
+    plt.savefig(DIR+ '\\peakMemory.png')
+    
+    
+    
+def plotLimitations():
+    limit_Y = [0,1,1,1,1,3,9,4,9,0]
+    plt.plot(BASE_X,limit_Y, color='blue', marker = 'o', label = "Memory Usage")
+    
+    plt.xlabel("Time")
+    plt.ylabel("Memory")
+    mean = np.mean(limit_Y)
+    meanLine = np.zeros(10)
+    for index in range(10):
+        meanLine[index] = mean
+    plt.plot(BASE_X,meanLine, color='green', label = "Change Line")
+    plt.legend(loc='upper center')
     plt.show()
+    plt.savefig(DIR+ '\\limit.png')
+    
     
 if __name__ == "__main__":
-    #plotMemoryChnagePoint()
+    plotMemoryChnagePoint()
     #plotSegemtPartsLength()
-    plotPeakMemory()
-
+    #plotPeakMemory()
+    #plotLimitations()
