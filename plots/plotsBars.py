@@ -83,7 +83,7 @@ def plotRetriesBarsDynamic(results, models):
         ax.bar_label(container)
 
 # @Param filePath has the name of the plot input
-def safePlotsBarsDynamic(results, models, filePath):
+def safePlotsBarsDynamic(results, models, filePath, yAxisLabel = None):
     twentyFiveAverage, fifthyAverage, seventyFiveAverage = calculateAverageWaste(results)
     
     
@@ -91,9 +91,11 @@ def safePlotsBarsDynamic(results, models, filePath):
                        "50%": fifthyAverage,
                        "75%": seventyFiveAverage}, index=models)
     ax = df.plot.bar(rot=0, color={"25%": "blue", "50%": "orange",  "75%": "green"})
+    if yAxisLabel != None:
+        ax.set_ylabel(yAxisLabel)
     for container in ax.containers:
         ax.bar_label(container)
-    plt.gcf().set_size_inches(15, 5)
+    plt.gcf().set_size_inches(20, 5)
     plt.savefig(filePath + '.png', dpi=100)
     plt.close()
 
@@ -194,6 +196,7 @@ def plotDictselective(resultsDictList, title, proecent):
     for container in ax.containers:
         ax.bar_label(container)
     ax.set_title(title)
+    ax.set_ylabel("Average Wastage (Gigabyte-Seconds)")
     plt.gcf().set_size_inches(15, 5)
     #plt.show()
     pathPng = "plotsPng\\sortedPlots\\" + proecent +"s.png"
@@ -214,6 +217,7 @@ def plotDictpartiell(resultsDictList, title, proecent):
     for container in ax.containers:
         ax.bar_label(container)
     ax.set_title(title)
+    ax.set_ylabel("Average Wastage (Gigabyte-Seconds)")
     plt.gcf().set_size_inches(15, 5)
     #plt.show()
     pathPng = "plotsPng\\sortedPlots\\" + proecent +"p.png"

@@ -72,5 +72,5 @@ class MostFrequentK_MCP_k_segmetns(KSegmentsModel):
                 k += 1
                 currentHigh = True
                 currentLow = False
-        return k
+        return k + 1
                 

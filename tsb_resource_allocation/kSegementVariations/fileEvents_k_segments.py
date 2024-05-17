@@ -52,7 +52,7 @@ class FileEvents_k_segments(KSegmentsModel):
                 currentLow = False
         if (k == 0):
             pass
-        return k
+        return k +1
 
     def fileAvarageLength(self):
         data = list(map(lambda d: (len(d[1])), self.files))

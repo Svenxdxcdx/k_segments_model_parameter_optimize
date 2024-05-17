@@ -72,5 +72,5 @@ class MostFrequentK_SL_k_segments(KSegmentsModel):
                 k += 1
                 currentHigh = True
                 currentLow = False
-        return k
+        return k + 1
                 

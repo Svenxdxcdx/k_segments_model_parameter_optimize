@@ -35,8 +35,8 @@ from plots.plotsBars import plotRetriesBarsDynamic
 #CURRENT_DIR = "eagerKs"
 #CURRENT_DIR = "sarekKs"
 #CURRENT_DIR = "rangeland"
-#CURRENT_DIR = "third"
-CURRENT_DIR = "thirdDifferentKs"
+CURRENT_DIR = "third"
+#CURRENT_DIR = "thirdDifferentKs"
 SAFE_FOLDER = "plotsPng\\" + CURRENT_DIR + "\\"
 
 def readPickleFile():
@@ -136,8 +136,8 @@ def readAndSafeAllPlotFileNames():
     
             
     for waste, k, name, fileName in zip(wasteList, k_list, nameList, cutFileNames):
-        safePlotsBarsDynamic(waste, name, SAFE_FOLDER + fileName + "_storage_waste")
-        safePlotsBarsDynamic(k, name, SAFE_FOLDER + fileName + "k_Bars")
+        safePlotsBarsDynamic(waste, name, SAFE_FOLDER + fileName + "_storage_waste", "Average Wastage (Gigabyte-Seconds)")
+        safePlotsBarsDynamic(k, name, SAFE_FOLDER + fileName + "k_Bars", "Average Number of Segment Parts")
         #plotWastageBarsDynamic(waste, name)
         #plotSelectedK_BarsDynamic(k, name)
         pass

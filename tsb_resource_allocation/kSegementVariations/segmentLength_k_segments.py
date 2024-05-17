@@ -54,7 +54,7 @@ class SegmentLength_k_segments(KSegmentsModel):
                 currentHigh = True
                 currentLow = False
         
-        return k
+        return k + 1
                     
 
     
