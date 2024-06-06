@@ -484,12 +484,13 @@ if __name__ == "__main__":
     models = []
     fileNames = []
     
-    
+    """
     # PeakMemory_k_segments 
     models.append(PeakMemory_k_segments(k = k, monotonically_increasing = monotonically_increasing))
     models.append(PeakMemory_k_segments(k = k, monotonically_increasing = monotonically_increasing))
     
     fileNames.append("PeakMemory_k")
+    
         # FileEvents_k_segments
     models.append(FileEvents_k_segments(k = k, monotonically_increasing = monotonically_increasing))
     models.append(FileEvents_k_segments(k = k, monotonically_increasing = monotonically_increasing))
@@ -511,19 +512,19 @@ if __name__ == "__main__":
     #MemoryAndSegmentLengthCombind_k_segments
     models.append(MemoryAndSegmentLengthCombind_k_segments(k = k, monotonically_increasing = monotonically_increasing))
     models.append(MemoryAndSegmentLengthCombind_k_segments(k = k, monotonically_increasing = monotonically_increasing))
-    fileNames.append("M_and_SL_Combind_k")
+    fileNames.append("MCP_and_SL_Combind_k")
     
     #SegmentLength_k_segments
     models.append(SegmentLength_k_segments(k = k, monotonically_increasing = monotonically_increasing))
     models.append(SegmentLength_k_segments(k = k, monotonically_increasing = monotonically_increasing))
     fileNames.append("SegmentLength_k")
-    
+    """
     #LookUpTable_k_segments
     models.append(SameFileSizeMCP_k_segments(k = k, monotonically_increasing = monotonically_increasing))
     models.append(SameFileSizeMCP_k_segments(k = k, monotonically_increasing = monotonically_increasing))
     fileNames.append("SameFileSizeMCP_k")
     
-    
+    """
     #ActiveFeedbackModel_k_segments
     models.append(ActiveFeedbackModel_k_segments(k = k, monotonically_increasing = monotonically_increasing))
     models.append(ActiveFeedbackModel_k_segments(k = k, monotonically_increasing = monotonically_increasing))
@@ -542,13 +543,13 @@ if __name__ == "__main__":
     
     models.append(M_and_SL_mostFrequentK(k = k, monotonically_increasing = monotonically_increasing))
     models.append(M_and_SL_mostFrequentK(k = k, monotonically_increasing = monotonically_increasing))
-    fileNames.append("M_and_SL_mostFrequentK")
+    fileNames.append("MCP_and_SL_mostFrequentK")
     
     models.append(M_and_SL_sameFileSize(k = k, monotonically_increasing = monotonically_increasing))
     models.append(M_and_SL_sameFileSize(k = k, monotonically_increasing = monotonically_increasing))
-    fileNames.append("M_and_SL_sameFileSize")
+    fileNames.append("MCP_and_SL_sameFileSize")
     
-    
+    """
     
     experiment_Manager = Experiment_Manager_Both(models, fileNames)
     experiment_Manager.runAllExperiments()
