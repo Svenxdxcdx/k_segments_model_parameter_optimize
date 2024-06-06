@@ -93,7 +93,7 @@ class ActiveFeedbackModel_k_segments(KSegmentsModel):
                 currentLow = False
         if (k == 0):
             pass
-        return k
+        return k + 1 
                 
     def calaclulateMostFrequentFileSize(self, memoryList):
     

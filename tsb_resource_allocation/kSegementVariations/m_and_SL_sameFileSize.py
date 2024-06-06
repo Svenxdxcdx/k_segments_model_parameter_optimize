@@ -95,7 +95,7 @@ class M_and_SL_sameFileSize(KSegmentsModel):
                 currentLow = False
         if (k == 0):
             pass
-        return k
+        return k + 1
                 
     def calaclulateMostFrequentFileSize(self, memoryList):
     

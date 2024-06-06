@@ -62,7 +62,7 @@ class MemoryAndSegmentLengthCombind_k_segments(KSegmentsModel):
                 k += 1
                 currentHigh = True
                 currentLow = False
-        return k
+        return k + 1
                 
     
     def valid_k(self):

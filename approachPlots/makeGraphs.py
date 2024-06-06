@@ -17,7 +17,7 @@ BASE_Y = [0,1,3,2,1,2,3,4,2,0]
 def plotFirst():
     plt.plot(BASE_X,BASE_Y)
     
-    plt.xlabel("Time")
+    plt.xlabel("Time in Seconds")
     plt.ylabel("Memory Usage")
     
     plt.show()
@@ -26,8 +26,8 @@ def plotFirst():
 def plotMemoryChnagePoint():
     plt.plot(BASE_X,BASE_Y, color='blue', marker = 'o', label = "Memory Usage")
     
-    plt.xlabel("Time")
-    plt.ylabel("Memory")
+    plt.xlabel("Time in Seconds")
+    plt.ylabel("Memory in Gigabytes ")
     mean = np.mean(BASE_Y)
     meanLine = np.zeros(10)
     for index in range(10):
@@ -39,8 +39,8 @@ def plotMemoryChnagePoint():
 def plotSegemtPartsLength():
     plt.plot(BASE_X,BASE_Y, color='blue', marker = 'o', label = "Memory Usage")
     
-    plt.xlabel("Time")
-    plt.ylabel("Memory")
+    plt.xlabel("Time in Seconds")
+    plt.ylabel("Memory in Gigabytes ")
     segementParts_X = [0,1]
     segementParts_Y = [0,0]
     
@@ -52,8 +52,8 @@ def plotSegemtPartsLength():
 def plotPeakMemory():
     plt.plot(BASE_X,BASE_Y, color='blue', marker = 'o', label = "Memory Usage")
     
-    plt.xlabel("Time")
-    plt.ylabel("Memory")
+    plt.xlabel("Time in Seconds")
+    plt.ylabel("Memory in Gigabytes ")
     
     segementParts_X = [2,7]
     segementParts_Y = [3,4]
@@ -70,8 +70,8 @@ def plotLimitations():
     limit_Y = [0,1,1,1,1,3,9,4,9,0]
     plt.plot(BASE_X,limit_Y, color='blue', marker = 'o', label = "Memory Usage")
     
-    plt.xlabel("Time")
-    plt.ylabel("Memory")
+    plt.xlabel("Time in Seconds")
+    plt.ylabel("Memory in Gigabytes ")
     mean = np.mean(limit_Y)
     meanLine = np.zeros(10)
     for index in range(10):
@@ -83,7 +83,7 @@ def plotLimitations():
     
     
 if __name__ == "__main__":
-    plotMemoryChnagePoint()
+    #plotMemoryChnagePoint()
     #plotSegemtPartsLength()
-    #plotPeakMemory()
+    plotPeakMemory()
     #plotLimitations()

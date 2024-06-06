@@ -484,7 +484,7 @@ if __name__ == "__main__":
     models = []
     fileNames = []
     
-    """
+    
     # PeakMemory_k_segments 
     models.append(PeakMemory_k_segments(k = k, monotonically_increasing = monotonically_increasing))
     models.append(PeakMemory_k_segments(k = k, monotonically_increasing = monotonically_increasing))
@@ -539,7 +539,7 @@ if __name__ == "__main__":
     models.append(SameFileSizeSL_k_segments(k = k, monotonically_increasing = monotonically_increasing))
     fileNames.append("SameFileSizeSL_k_segments")
     
-    """
+    
     models.append(M_and_SL_mostFrequentK(k = k, monotonically_increasing = monotonically_increasing))
     models.append(M_and_SL_mostFrequentK(k = k, monotonically_increasing = monotonically_increasing))
     fileNames.append("M_and_SL_mostFrequentK")
