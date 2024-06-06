@@ -136,16 +136,22 @@ def readAndSafeAllPlotFileNames():
     
             
     for waste, k, name, fileName in zip(wasteList, k_list, nameList, cutFileNames):
+        
+        name.pop(1)
+        name.pop(2)
         safePlotsBarsDynamic(waste, name, SAFE_FOLDER + fileName + "_storage_waste", "Average Wastage (Gigabyte-Seconds)")
         safePlotsBarsDynamic(k, name, SAFE_FOLDER + fileName + "k_Bars", "Average Number of Segment Parts")
         #plotWastageBarsDynamic(waste, name)
         #plotSelectedK_BarsDynamic(k, name)
         pass
         
-    for runtime, retries, name, fileName in zip(runtime_list, retries_list, nameList, cutFileNames):
+    #for runtime, retries, name, fileName in zip(runtime_list, retries_list, nameList, cutFileNames):
+    #    name.pop(1)
+     #   name.pop(2)
+        
         #safePlotRuntimeBarsDynamic(runtime, name, SAFE_FOLDER + fileName)
-        safePlotsBarsDynamic(runtime, name, SAFE_FOLDER + fileName + "runtime")
-        safePlotsBarsDynamic(retries, name, SAFE_FOLDER + fileName + "retries")
+        #safePlotsBarsDynamic(runtime, name, SAFE_FOLDER + fileName + "runtime")
+        #safePlotsBarsDynamic(retries, name, SAFE_FOLDER + fileName + "retries")
         #plotRuntimeBarsDynamic(runtime, name)
         #plotRetriesBarsDynamic(retries, name)
         pass

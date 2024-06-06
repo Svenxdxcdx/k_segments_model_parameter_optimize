@@ -84,7 +84,13 @@ def plotRetriesBarsDynamic(results, models):
 
 # @Param filePath has the name of the plot input
 def safePlotsBarsDynamic(results, models, filePath, yAxisLabel = None):
+    for result in results:
+        for modleResult in result:
+            modleResult.pop(1)
+            modleResult.pop(2)
     twentyFiveAverage, fifthyAverage, seventyFiveAverage = calculateAverageWaste(results)
+    
+    
     
     
     df = pd.DataFrame({"25%": twentyFiveAverage,
