@@ -60,8 +60,8 @@ class PeakMemory_k_segments(KSegmentsModel):
         #
         plt.vlines(x=peaks, ymin=contour_heights, ymax=memToPlot[peaks], color="red")
         
-        plt.xlabel('data point at index') 
-        plt.ylabel("Memory in GB")
+        plt.xlabel('Time Series points') 
+        plt.ylabel("Memory in MB")
         
         #plt.show()
         filePath = "plotsPng\\peaksExamples\\"+ self.dir[0]

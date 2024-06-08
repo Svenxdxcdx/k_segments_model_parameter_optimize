@@ -47,12 +47,6 @@ class SameFileSizeMCP_k_segments(KSegmentsModel):
     # Numeric misstake get covered
     def buildLookUpTable(self, memoryList):
         memoryList.sort(key=len)
-        smallestSize = len(memoryList[0])
-        
-        max_k = smallestSize
-        
-        biggestSize = len(memoryList[len(memoryList)-1])
-        sizeDifference = biggestSize - smallestSize
         
         mostFrequntFileLen = self.calaclulateMostFrequentFileSize(memoryList)
         
